@@ -1,0 +1,1424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FastAPI Initializr - Generate Your Project (v2.0)</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary: #009688;
+            --primary-dark: #00796b;
+            --accent: #ff6b35;
+            --background: #0a0e27;
+            --surface: #1a1f3a;
+            --surface-light: #252b4a;
+            --text: #e0e6ed;
+            --text-muted: #8b95a8;
+            --border: #2d3451;
+            --success: #4caf50;
+            --glow: rgba(0, 150, 136, 0.3);
+        }
+
+        body {
+            font-family: 'Space Mono', monospace;
+            background: var(--background);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(0, 150, 136, 0.08) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 107, 53, 0.05) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .grain {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.03;
+            pointer-events: none;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+            z-index: 1;
+        }
+
+        .container {
+            position: relative;
+            z-index: 2;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 3rem;
+            padding: 3rem 0;
+            animation: fadeInDown 0.8s ease-out;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        h1 {
+            font-family: 'Syne', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.02em;
+            text-shadow: 0 0 40px var(--glow);
+        }
+
+        .tagline {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .config-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .section {
+            margin-bottom: 2rem;
+            animation: slideIn 0.6s ease-out both;
+        }
+
+        .section:nth-child(1) { animation-delay: 0.1s; }
+        .section:nth-child(2) { animation-delay: 0.2s; }
+        .section:nth-child(3) { animation-delay: 0.3s; }
+        .section:nth-child(4) { animation-delay: 0.4s; }
+        .section:nth-child(5) { animation-delay: 0.5s; }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .section-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-title::before {
+            content: '▸';
+            font-size: 1.2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--glow);
+            transform: translateY(-1px);
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            position: relative;
+        }
+
+        .radio-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .radio-option label {
+            display: block;
+            padding: 0.6rem 1.2rem;
+            background: var(--surface-light);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+            margin: 0;
+            text-transform: none;
+        }
+
+        .radio-option input[type="radio"]:checked + label {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--background);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--glow);
+        }
+
+        .radio-option label:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .dependencies-grid {
+            display: grid;
+            gap: 0.75rem;
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .dependencies-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .dependencies-grid::-webkit-scrollbar-track {
+            background: var(--surface-light);
+            border-radius: 3px;
+        }
+
+        .dependencies-grid::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 3px;
+        }
+
+        .dependency-item {
+            position: relative;
+        }
+
+        .dependency-item input[type="checkbox"] {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .dependency-item label {
+            display: block;
+            padding: 1rem;
+            background: var(--surface-light);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 0;
+            text-transform: none;
+        }
+
+        .dependency-item input[type="checkbox"]:checked + label {
+            background: var(--primary-dark);
+            border-color: var(--primary);
+            transform: translateX(4px);
+            box-shadow: -4px 0 0 var(--primary);
+        }
+
+        .dependency-item label:hover {
+            border-color: var(--primary);
+            transform: translateX(2px);
+        }
+
+        .dependency-title {
+            font-weight: 700;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+            color: var(--text);
+        }
+
+        .dependency-desc {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .sidebar {
+            position: sticky;
+            top: 2rem;
+            height: fit-content;
+        }
+
+        .preview-panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        .preview-title {
+            font-family: 'Syne', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .command-preview {
+            background: var(--background);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            color: var(--success);
+            margin-bottom: 1.5rem;
+            word-break: break-all;
+        }
+
+        .selected-deps {
+            margin-bottom: 1.5rem;
+        }
+
+        .selected-deps-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .dep-tag {
+            display: inline-block;
+            padding: 0.4rem 0.8rem;
+            background: var(--primary-dark);
+            border-radius: 6px;
+            font-size: 0.75rem;
+            margin: 0.25rem;
+            color: var(--text);
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 1.2rem;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            border: none;
+            border-radius: 12px;
+            color: white;
+            font-family: 'Syne', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            box-shadow: 0 4px 16px var(--glow);
+        }
+
+        .generate-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 24px var(--glow);
+        }
+
+        .generate-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .search-box input {
+            padding: 0.75rem 1rem;
+            background: var(--background);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px var(--glow);
+        }
+
+        .filter-btn {
+            padding: 0.5rem 1rem;
+            background: var(--surface-light);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+        }
+
+        .filter-btn:hover {
+            border-color: var(--primary);
+            transform: translateY(-1px);
+        }
+
+        .filter-btn.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: var(--background);
+        }
+
+        .dependency-item.hidden {
+            display: none;
+        }
+
+        .refresh-btn {
+            padding: 0.75rem 1rem;
+            background: var(--surface-light);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            color: var(--text);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .refresh-btn:hover {
+            border-color: var(--primary);
+            color: var(--primary);
+            transform: rotate(90deg);
+        }
+
+        .refresh-btn:active {
+            transform: rotate(90deg) scale(0.95);
+        }
+
+        .refresh-btn.loading {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 1024px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                position: static;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+
+            .container {
+                padding: 1rem;
+            }
+
+            .config-panel,
+            .preview-panel {
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="grain"></div>
+    
+    <div class="container">
+        <header>
+            <h1>FastAPI Initializr</h1>
+            <p class="tagline">Bootstrap your next high-performance Python API</p>
+        </header>
+
+        <div class="main-content">
+            <div class="config-panel">
+                <form id="projectForm">
+                    <div class="section">
+                        <h2 class="section-title">Project Metadata</h2>
+                        <div class="form-group">
+                            <label for="projectName">Project Name</label>
+                            <input type="text" id="projectName" name="projectName" value="my-fastapi-project" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="description">Description</label>
+                            <input type="text" id="description" name="description" value="A FastAPI project">
+                        </div>
+                        <div class="form-group">
+                            <label for="packageName">Package Name</label>
+                            <input type="text" id="packageName" name="packageName" value="app" required>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">Python Version</h2>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="py312" name="pythonVersion" value="3.12" checked>
+                                <label for="py312">3.12</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="py311" name="pythonVersion" value="3.11">
+                                <label for="py311">3.11</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="py310" name="pythonVersion" value="3.10">
+                                <label for="py310">3.10</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">Packaging</h2>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="poetry" name="packaging" value="poetry" checked>
+                                <label for="poetry">Poetry</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="pip" name="packaging" value="pip">
+                                <label for="pip">Requirements.txt</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="pipenv" name="packaging" value="pipenv">
+                                <label for="pipenv">Pipenv</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">Database</h2>
+                        <div class="radio-group">
+                            <div class="radio-option">
+                                <input type="radio" id="none" name="database" value="none" checked>
+                                <label for="none">None</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="postgres" name="database" value="postgres">
+                                <label for="postgres">PostgreSQL</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="mysql" name="database" value="mysql">
+                                <label for="mysql">MySQL</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="sqlite" name="database" value="sqlite">
+                                <label for="sqlite">SQLite</label>
+                            </div>
+                            <div class="radio-option">
+                                <input type="radio" id="mongodb" name="database" value="mongodb">
+                                <label for="mongodb">MongoDB</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="section">
+                        <h2 class="section-title">Dependencies</h2>
+                        <div style="display: flex; gap: 0.5rem; margin-bottom: 1rem; align-items: center;">
+                            <div class="search-box" style="flex: 1;">
+                                <input type="text" id="depSearch" placeholder="Search dependencies..." style="width: 100%;">
+                            </div>
+                            <button type="button" id="clearCacheBtn" class="refresh-btn" title="Clear all cached data" style="background: var(--accent);">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 1 0z"/>
+                                </svg>
+                            </button>
+                            <button type="button" id="refreshBtn" class="refresh-btn" title="Refresh from PyPI API">
+                                <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                                    <path d="M8 3a5 5 0 1 0 4.546 2.914.5.5 0 0 1 .908-.417A6 6 0 1 1 8 2v1z"/>
+                                    <path d="M8 4.466V.534a.25.25 0 0 1 .41-.192l2.36 1.966c.12.1.12.284 0 .384L8.41 4.658A.25.25 0 0 1 8 4.466z"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <div style="margin-bottom: 1rem; padding: 0.75rem; background: var(--surface-light); border-radius: 8px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between;">
+                            <div>
+                                <strong>Loading Mode:</strong>
+                                <span id="loadingModeText" style="color: var(--primary); margin-left: 0.5rem;">PyPI (Fresh Data)</span>
+                            </div>
+                            <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                <input type="checkbox" id="instantModeToggle" style="cursor: pointer;">
+                                <span style="font-size: 0.85rem;">Instant Mode (Offline)</span>
+                            </label>
+                        </div>
+                        <div class="category-filters" style="margin-bottom: 1rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                            <button type="button" class="filter-btn active" data-category="all">All</button>
+                            <button type="button" class="filter-btn" data-category="database">Database</button>
+                            <button type="button" class="filter-btn" data-category="auth">Auth</button>
+                            <button type="button" class="filter-btn" data-category="api">API</button>
+                            <button type="button" class="filter-btn" data-category="testing">Testing</button>
+                            <button type="button" class="filter-btn" data-category="monitoring">Monitoring</button>
+                            <button type="button" class="filter-btn" data-category="async">Async</button>
+                        </div>
+                        <div class="dependencies-grid" id="dependenciesContainer">
+                            <!-- Dependencies will be loaded here dynamically -->
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="sidebar">
+                <div class="preview-panel">
+                    <h3 class="preview-title">Project Preview</h3>
+                    
+                    <div class="command-preview" id="commandPreview">
+                        $ fastapi-init generate
+                    </div>
+
+                    <div class="selected-deps">
+                        <div class="selected-deps-title">Selected Dependencies</div>
+                        <div id="selectedDepsContainer">
+                            <span style="color: var(--text-muted); font-size: 0.85rem;">No dependencies selected</span>
+                        </div>
+                    </div>
+
+                    <button type="submit" form="projectForm" class="generate-btn">
+                        Generate Project
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Create JSZip from CDN
+        const script = document.createElement('script');
+        script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+        document.head.appendChild(script);
+
+        // Curated list of popular packages (with category info)
+        // Package name can include extras like [cryptography], but we fetch base package from PyPI
+        const CURATED_PACKAGES = {
+            database: ['sqlalchemy', 'alembic', 'tortoise-orm', 'sqlmodel', 'databases', 'motor', 'redis', 'pymongo', 'psycopg2-binary', 'asyncpg', 'aiomysql'],
+            auth: ['python-jose[cryptography]', 'passlib[bcrypt]', 'authlib', 'pyjwt', 'python-multipart'],
+            api: ['httpx', 'requests', 'aiohttp', 'websockets', 'graphene', 'strawberry-graphql', 'email-validator', 'python-slugify'],
+            testing: ['pytest', 'pytest-asyncio', 'pytest-cov', 'faker', 'factory-boy', 'hypothesis'],
+            monitoring: ['prometheus-client', 'sentry-sdk', 'structlog', 'loguru', 'opentelemetry-api'],
+            async: ['celery', 'arq', 'dramatiq', 'rq'],
+            config: ['pydantic-settings', 'python-decouple', 'dynaconf'],
+            templates: ['jinja2', 'aiofiles', 'pillow'],
+            validation: ['marshmallow'],
+            utils: ['arrow', 'python-dateutil', 'click', 'typer', 'rich']
+        };
+
+        // Fallback database with basic info (used for instant loading)
+        const FALLBACK_DATABASE = [
+            { id: 'sqlalchemy', name: 'SQLAlchemy', package: 'sqlalchemy', description: 'SQL toolkit and ORM', category: 'database' },
+            { id: 'alembic', name: 'Alembic', package: 'alembic', description: 'Database migration tool', category: 'database' },
+            { id: 'tortoise_orm', name: 'Tortoise ORM', package: 'tortoise-orm', description: 'Async ORM inspired by Django', category: 'database' },
+            { id: 'sqlmodel', name: 'SQLModel', package: 'sqlmodel', description: 'SQL databases with Python types', category: 'database' },
+            { id: 'databases', name: 'Databases', package: 'databases', description: 'Async database support', category: 'database' },
+            { id: 'motor', name: 'Motor', package: 'motor', description: 'Async MongoDB driver', category: 'database' },
+            { id: 'redis', name: 'Redis', package: 'redis', description: 'Redis client for caching', category: 'database' },
+            { id: 'pymongo', name: 'PyMongo', package: 'pymongo', description: 'MongoDB driver', category: 'database' },
+            { id: 'psycopg2_binary', name: 'Psycopg2', package: 'psycopg2-binary', description: 'PostgreSQL adapter', category: 'database' },
+            { id: 'asyncpg', name: 'AsyncPG', package: 'asyncpg', description: 'Fast PostgreSQL driver', category: 'database' },
+            { id: 'aiomysql', name: 'AioMySQL', package: 'aiomysql', description: 'Async MySQL driver', category: 'database' },
+            
+            { id: 'python_jose', name: 'JWT Auth', package: 'python-jose[cryptography]', description: 'JSON Web Token authentication', category: 'auth' },
+            { id: 'passlib', name: 'Passlib', package: 'passlib[bcrypt]', description: 'Secure password hashing', category: 'auth' },
+            { id: 'authlib', name: 'Authlib', package: 'authlib', description: 'OAuth and OpenID Connect', category: 'auth' },
+            { id: 'pyjwt', name: 'PyJWT', package: 'pyjwt', description: 'JWT implementation', category: 'auth' },
+            { id: 'python_multipart', name: 'Multipart', package: 'python-multipart', description: 'Form data parsing', category: 'auth' },
+            
+            { id: 'httpx', name: 'HTTPX', package: 'httpx', description: 'Async HTTP client', category: 'api' },
+            { id: 'requests', name: 'Requests', package: 'requests', description: 'HTTP library', category: 'api' },
+            { id: 'aiohttp', name: 'Aiohttp', package: 'aiohttp', description: 'Async HTTP client/server', category: 'api' },
+            { id: 'websockets', name: 'WebSockets', package: 'websockets', description: 'WebSocket support', category: 'api' },
+            { id: 'graphene', name: 'Graphene', package: 'graphene', description: 'GraphQL framework', category: 'api' },
+            { id: 'strawberry_graphql', name: 'Strawberry', package: 'strawberry-graphql', description: 'Type-safe GraphQL', category: 'api' },
+            { id: 'email_validator', name: 'Email Validator', package: 'email-validator', description: 'Email validation', category: 'api' },
+            { id: 'python_slugify', name: 'Slugify', package: 'python-slugify', description: 'Slug generation', category: 'api' },
+            
+            { id: 'pytest', name: 'Pytest', package: 'pytest', description: 'Testing framework', category: 'testing' },
+            { id: 'pytest_asyncio', name: 'Pytest Asyncio', package: 'pytest-asyncio', description: 'Async testing support', category: 'testing' },
+            { id: 'pytest_cov', name: 'Pytest Coverage', package: 'pytest-cov', description: 'Code coverage plugin', category: 'testing' },
+            { id: 'faker', name: 'Faker', package: 'faker', description: 'Test data generation', category: 'testing' },
+            { id: 'factory_boy', name: 'Factory Boy', package: 'factory-boy', description: 'Test fixtures', category: 'testing' },
+            { id: 'hypothesis', name: 'Hypothesis', package: 'hypothesis', description: 'Property-based testing', category: 'testing' },
+            
+            { id: 'prometheus_client', name: 'Prometheus', package: 'prometheus-client', description: 'Metrics and monitoring', category: 'monitoring' },
+            { id: 'sentry_sdk', name: 'Sentry', package: 'sentry-sdk', description: 'Error tracking', category: 'monitoring' },
+            { id: 'structlog', name: 'Structlog', package: 'structlog', description: 'Structured logging', category: 'monitoring' },
+            { id: 'loguru', name: 'Loguru', package: 'loguru', description: 'Easy logging', category: 'monitoring' },
+            { id: 'opentelemetry_api', name: 'OpenTelemetry', package: 'opentelemetry-api', description: 'Observability framework', category: 'monitoring' },
+            
+            { id: 'celery', name: 'Celery', package: 'celery', description: 'Distributed task queue', category: 'async' },
+            { id: 'arq', name: 'ARQ', package: 'arq', description: 'Async task queue with Redis', category: 'async' },
+            { id: 'dramatiq', name: 'Dramatiq', package: 'dramatiq', description: 'Task processing library', category: 'async' },
+            { id: 'rq', name: 'RQ', package: 'rq', description: 'Simple task queue', category: 'async' },
+            
+            { id: 'pydantic_settings', name: 'Pydantic Settings', package: 'pydantic-settings', description: 'Settings management', category: 'config' },
+            { id: 'python_decouple', name: 'Python Decouple', package: 'python-decouple', description: 'Settings from environment', category: 'config' },
+            { id: 'dynaconf', name: 'Dynaconf', package: 'dynaconf', description: 'Configuration management', category: 'config' },
+            
+            { id: 'jinja2', name: 'Jinja2', package: 'jinja2', description: 'Template engine', category: 'templates' },
+            { id: 'aiofiles', name: 'Aiofiles', package: 'aiofiles', description: 'Async file operations', category: 'templates' },
+            { id: 'pillow', name: 'Pillow', package: 'pillow', description: 'Image processing', category: 'templates' },
+            
+            { id: 'marshmallow', name: 'Marshmallow', package: 'marshmallow', description: 'Schema validation', category: 'validation' },
+            
+            { id: 'arrow', name: 'Arrow', package: 'arrow', description: 'Better dates and times', category: 'utils' },
+            { id: 'python_dateutil', name: 'Dateutil', package: 'python-dateutil', description: 'Date utilities', category: 'utils' },
+            { id: 'click', name: 'Click', package: 'click', description: 'CLI creation', category: 'utils' },
+            { id: 'typer', name: 'Typer', package: 'typer', description: 'FastAPI-style CLI', category: 'utils' },
+            { id: 'rich', name: 'Rich', package: 'rich', description: 'Beautiful terminal output', category: 'utils' },
+        ];
+
+        // Cache for API responses
+        const packageCache = {};
+
+        // Fetch package info from PyPI JSON API with retry logic
+        async function fetchPackageFromPyPI(packageName, retries = 2) {
+            // Handle package extras like python-jose[cryptography] -> python-jose
+            const basePackageName = packageName.split('[')[0];
+            
+            // Check cache first
+            if (packageCache[basePackageName]) {
+                return packageCache[basePackageName];
+            }
+
+            for (let attempt = 0; attempt <= retries; attempt++) {
+                try {
+                    const response = await fetch(`https://pypi.org/pypi/${basePackageName}/json`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                        }
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        packageCache[basePackageName] = data;
+                        return data;
+                    } else if (response.status === 404) {
+                        // Package doesn't exist, don't retry
+                        console.warn(`Package ${basePackageName} not found on PyPI`);
+                        return null;
+                    } else if (attempt < retries) {
+                        // Wait before retrying
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                        continue;
+                    }
+                } catch (error) {
+                    if (attempt < retries) {
+                        console.log(`Retry ${attempt + 1}/${retries} for ${basePackageName}`);
+                        await new Promise(resolve => setTimeout(resolve, 1000 * (attempt + 1)));
+                    } else {
+                        console.warn(`Failed to fetch ${basePackageName} after ${retries + 1} attempts:`, error.message);
+                    }
+                }
+            }
+            return null;
+        }
+
+        // Convert PyPI data to our dependency format
+        function pypiToDepencency(packageName, pypiData, category) {
+            const cleanId = packageName.replace(/[^a-z0-9]/gi, '_');
+            
+            if (!pypiData) {
+                // Use better fallback names based on package name
+                const fallbackNames = {
+                    'python-jose': 'Python JOSE (JWT)',
+                    'passlib': 'Passlib',
+                    'python-multipart': 'Python Multipart',
+                    'strawberry-graphql': 'Strawberry GraphQL',
+                    'email-validator': 'Email Validator',
+                    'python-slugify': 'Python Slugify',
+                    'pytest-asyncio': 'Pytest Asyncio',
+                    'pytest-cov': 'Pytest Coverage',
+                    'factory-boy': 'Factory Boy',
+                    'prometheus-client': 'Prometheus Client',
+                    'sentry-sdk': 'Sentry SDK',
+                    'opentelemetry-api': 'OpenTelemetry API',
+                    'pydantic-settings': 'Pydantic Settings',
+                    'python-decouple': 'Python Decouple',
+                    'python-dateutil': 'Python Dateutil',
+                    'psycopg2-binary': 'Psycopg2'
+                };
+                
+                const fallbackDescriptions = {
+                    'python-jose': 'JSON Web Token implementation',
+                    'passlib': 'Password hashing library',
+                    'python-multipart': 'Streaming multipart parser',
+                    'strawberry-graphql': 'Python GraphQL library',
+                    'email-validator': 'Email address validation',
+                    'python-slugify': 'Unicode slug generator',
+                    'pytest-asyncio': 'Pytest support for asyncio',
+                    'pytest-cov': 'Coverage plugin for pytest',
+                    'factory-boy': 'Test fixtures replacement',
+                    'prometheus-client': 'Prometheus instrumentation library',
+                    'sentry-sdk': 'Sentry SDK for Python',
+                    'opentelemetry-api': 'OpenTelemetry API',
+                    'pydantic-settings': 'Settings management using Pydantic',
+                    'python-decouple': 'Strict separation of config from code',
+                    'python-dateutil': 'Extensions to the standard datetime',
+                    'psycopg2-binary': 'PostgreSQL database adapter'
+                };
+                
+                return {
+                    id: cleanId,
+                    name: fallbackNames[packageName] || packageName.split('-').map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(' '),
+                    package: packageName,
+                    description: fallbackDescriptions[packageName] || 'Python package',
+                    category: category
+                };
+            }
+
+            const info = pypiData.info || {};
+            const description = info.summary || info.description || 'No description available';
+            
+            return {
+                id: cleanId,
+                name: info.name || packageName,
+                package: packageName,
+                description: description.slice(0, 100),
+                category: category,
+                version: info.version
+            };
+        }
+
+        // Load all dependencies from PyPI
+        async function loadDependencies() {
+            console.log('Loading dependencies from PyPI API...');
+            const allDependencies = [];
+            let fetchedCount = 0;
+            let failedCount = 0;
+            const totalCount = Object.values(CURATED_PACKAGES).flat().length;
+
+            // Show loading indicator
+            const container = document.getElementById('dependenciesContainer');
+            container.innerHTML = `
+                <div style="text-align: center; padding: 2rem; color: var(--text-muted);">
+                    <div style="margin-bottom: 1rem;">Loading dependencies from PyPI...</div>
+                    <div style="font-size: 1.5rem; color: var(--primary);"><span id="loadingCount">0</span>/${totalCount}</div>
+                    <div style="font-size: 0.85rem; margin-top: 0.5rem;">This may take 20-30 seconds...</div>
+                </div>
+            `;
+
+            // Fetch packages by category
+            for (const [category, packages] of Object.entries(CURATED_PACKAGES)) {
+                // Fetch in smaller batches with longer delays to avoid rate limiting
+                const batchSize = 3;
+                for (let i = 0; i < packages.length; i += batchSize) {
+                    const batch = packages.slice(i, i + batchSize);
+                    
+                    const promises = batch.map(async (packageName) => {
+                        const data = await fetchPackageFromPyPI(packageName);
+                        fetchedCount++;
+                        
+                        const countEl = document.getElementById('loadingCount');
+                        if (countEl) {
+                            countEl.textContent = fetchedCount;
+                        }
+                        
+                        if (!data) {
+                            failedCount++;
+                        }
+                        
+                        return pypiToDepencency(packageName, data, category);
+                    });
+
+                    const batchResults = await Promise.all(promises);
+                    allDependencies.push(...batchResults);
+
+                    // Longer delay between batches to be more respectful
+                    await new Promise(resolve => setTimeout(resolve, 300));
+                }
+            }
+
+            console.log(`✓ Loaded ${allDependencies.length} dependencies from PyPI`);
+            if (failedCount > 0) {
+                console.log(`⚠ ${failedCount} packages failed to load (will show with default info)`);
+            }
+            
+            // Store in localStorage for faster subsequent loads
+            try {
+                localStorage.setItem('fastapi_dependencies', JSON.stringify(allDependencies));
+                localStorage.setItem('fastapi_dependencies_timestamp', Date.now().toString());
+            } catch (e) {
+                console.warn('Failed to cache dependencies:', e);
+            }
+
+            return allDependencies;
+        }
+
+        // Load from cache if available and recent (less than 1 day old)
+        async function loadDependenciesWithCache() {
+            try {
+                const cached = localStorage.getItem('fastapi_dependencies');
+                const timestamp = localStorage.getItem('fastapi_dependencies_timestamp');
+                
+                if (cached && timestamp) {
+                    const age = Date.now() - parseInt(timestamp);
+                    const oneDayMs = 24 * 60 * 60 * 1000;
+                    
+                    if (age < oneDayMs) {
+                        console.log('✓ Using cached dependencies');
+                        return JSON.parse(cached);
+                    } else {
+                        console.log('⚠ Cache expired, fetching fresh data...');
+                    }
+                }
+            } catch (e) {
+                console.warn('Failed to load cache:', e);
+            }
+
+            // Check if user wants to skip PyPI fetch (instant load mode)
+            const skipFetch = localStorage.getItem('fastapi_skip_pypi_fetch');
+            if (skipFetch === 'true') {
+                console.log('✓ Using fallback database (instant mode)');
+                return FALLBACK_DATABASE;
+            }
+
+            // Cache miss or expired, fetch fresh data
+            return await loadDependencies();
+        }
+
+        // Option to enable instant loading mode (uses fallback, skips PyPI)
+        function enableInstantMode() {
+            localStorage.setItem('fastapi_skip_pypi_fetch', 'true');
+            console.log('✓ Instant mode enabled - will use fallback database on next load');
+        }
+
+        function disableInstantMode() {
+            localStorage.removeItem('fastapi_skip_pypi_fetch');
+            console.log('✓ Instant mode disabled - will fetch from PyPI on next load');
+        }
+
+        // Global dependencies storage
+        let allDependencies = [];
+        
+        // Global Set to track checked dependencies (persists across category switches)
+        const globalCheckedDeps = new Set();
+
+        // Render dependencies
+        async function renderDependencies(filter = 'all', searchTerm = '') {
+            const container = document.getElementById('dependenciesContainer');
+            
+            // Load dependencies if not already loaded
+            if (allDependencies.length === 0) {
+                console.log('🔄 Loading dependencies...');
+                allDependencies = await loadDependenciesWithCache();
+                console.log(`✓ Loaded ${allDependencies.length} dependencies`);
+                console.log('First dependency:', allDependencies[0]);
+            }
+            
+            // Update global checked state with currently visible checkboxes
+            document.querySelectorAll('input[name="dependencies"]:checked').forEach(cb => {
+                globalCheckedDeps.add(cb.value);
+            });
+            document.querySelectorAll('input[name="dependencies"]:not(:checked)').forEach(cb => {
+                globalCheckedDeps.delete(cb.value);
+            });
+            
+            const filtered = allDependencies.filter(dep => {
+                const matchesCategory = filter === 'all' || dep.category === filter;
+                const matchesSearch = !searchTerm || 
+                    dep.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    dep.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                    dep.package.toLowerCase().includes(searchTerm.toLowerCase());
+                return matchesCategory && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-muted);">No dependencies found</div>';
+                return;
+            }
+
+            container.innerHTML = filtered.map(dep => `
+                <div class="dependency-item" data-category="${dep.category}">
+                    <input type="checkbox" id="dep-${dep.id}" name="dependencies" value="${dep.package}" ${globalCheckedDeps.has(dep.package) ? 'checked' : ''}>
+                    <label for="dep-${dep.id}">
+                        <div class="dependency-title">${dep.name}</div>
+                        <div class="dependency-desc">${dep.description}</div>
+                    </label>
+                </div>
+            `).join('');
+
+            // Re-attach event listeners
+            container.querySelectorAll('input[name="dependencies"]').forEach(cb => {
+                cb.addEventListener('change', (e) => {
+                    // Update global state when checkbox changes
+                    if (e.target.checked) {
+                        globalCheckedDeps.add(e.target.value);
+                    } else {
+                        globalCheckedDeps.delete(e.target.value);
+                    }
+                    updatePreview();
+                });
+            });
+            
+            // Update preview to sync the selected dependencies list with global state
+            updatePreview();
+        }
+
+        const form = document.getElementById('projectForm');
+        const selectedDepsContainer = document.getElementById('selectedDepsContainer');
+        const commandPreview = document.getElementById('commandPreview');
+        const depSearch = document.getElementById('depSearch');
+        const filterBtns = document.querySelectorAll('.filter-btn');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const clearCacheBtn = document.getElementById('clearCacheBtn');
+        const instantModeToggle = document.getElementById('instantModeToggle');
+        const loadingModeText = document.getElementById('loadingModeText');
+
+        // Clear cache button - removes all localStorage data
+        clearCacheBtn.addEventListener('click', () => {
+            if (confirm('Clear all cached data and reload? This will fetch fresh data from PyPI.')) {
+                console.log('🗑️ Clearing all cache...');
+                localStorage.removeItem('fastapi_dependencies');
+                localStorage.removeItem('fastapi_dependencies_timestamp');
+                localStorage.removeItem('fastapi_skip_pypi_fetch');
+                instantModeToggle.checked = false;
+                updateLoadingModeText();
+                alert('Cache cleared! Reloading page...');
+                window.location.reload();
+            }
+        });
+
+        // Set initial state of instant mode toggle
+        instantModeToggle.checked = localStorage.getItem('fastapi_skip_pypi_fetch') === 'true';
+        updateLoadingModeText();
+
+        // Instant mode toggle
+        instantModeToggle.addEventListener('change', (e) => {
+            if (e.target.checked) {
+                enableInstantMode();
+            } else {
+                disableInstantMode();
+            }
+            updateLoadingModeText();
+        });
+
+        function updateLoadingModeText() {
+            if (instantModeToggle.checked) {
+                loadingModeText.textContent = 'Instant (Offline)';
+                loadingModeText.style.color = 'var(--accent)';
+            } else {
+                loadingModeText.textContent = 'PyPI (Fresh Data)';
+                loadingModeText.style.color = 'var(--primary)';
+            }
+        }
+
+        // Refresh button - force reload from PyPI
+        refreshBtn.addEventListener('click', async () => {
+            refreshBtn.classList.add('loading');
+            refreshBtn.disabled = true;
+            
+            // Temporarily disable instant mode for this refresh
+            const wasInstantMode = instantModeToggle.checked;
+            if (wasInstantMode) {
+                localStorage.removeItem('fastapi_skip_pypi_fetch');
+            }
+            
+            // Clear cache
+            localStorage.removeItem('fastapi_dependencies');
+            localStorage.removeItem('fastapi_dependencies_timestamp');
+            allDependencies = [];
+            
+            // Reload
+            await renderDependencies();
+            
+            // Restore instant mode if it was enabled
+            if (wasInstantMode) {
+                localStorage.setItem('fastapi_skip_pypi_fetch', 'true');
+            }
+            
+            refreshBtn.classList.remove('loading');
+            refreshBtn.disabled = false;
+        });
+
+        // Search functionality
+        depSearch.addEventListener('input', (e) => {
+            const activeFilter = document.querySelector('.filter-btn.active').dataset.category;
+            renderDependencies(activeFilter, e.target.value);
+        });
+
+        // Filter functionality
+        filterBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                filterBtns.forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderDependencies(btn.dataset.category, depSearch.value);
+            });
+        });
+
+        // Update preview on form change
+        form.addEventListener('change', updatePreview);
+        form.addEventListener('input', updatePreview);
+
+        function updatePreview() {
+            const formData = new FormData(form);
+            const projectName = formData.get('projectName');
+            
+            // Use global checked state instead of DOM query (which only sees visible checkboxes)
+            const selectedDeps = Array.from(globalCheckedDeps);
+
+            // Update command preview
+            commandPreview.textContent = `$ cd ${projectName} && uvicorn ${formData.get('packageName')}.main:app --reload`;
+
+            // Update selected dependencies
+            if (selectedDeps.length === 0) {
+                selectedDepsContainer.innerHTML = '<span style="color: var(--text-muted); font-size: 0.85rem;">No dependencies selected</span>';
+            } else {
+                selectedDepsContainer.innerHTML = selectedDeps
+                    .map(dep => `<span class="dep-tag">${dep}</span>`)
+                    .join('');
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(form);
+            const config = {
+                projectName: formData.get('projectName'),
+                description: formData.get('description'),
+                packageName: formData.get('packageName'),
+                pythonVersion: formData.get('pythonVersion'),
+                packaging: formData.get('packaging'),
+                database: formData.get('database'),
+                // Use global checked state to ensure all selected dependencies are included
+                dependencies: Array.from(globalCheckedDeps)
+            };
+
+            // Wait for JSZip to load
+            while (typeof JSZip === 'undefined') {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+
+            generateProject(config);
+        });
+
+        async function generateProject(config) {
+            const zip = new JSZip();
+            const projectFolder = zip.folder(config.projectName);
+
+            // Generate dependencies list
+            const allDeps = ['fastapi', 'uvicorn[standard]', ...config.dependencies];
+            
+            // Add database driver if needed
+            const dbDrivers = {
+                'postgres': 'psycopg2-binary',
+                'mysql': 'pymysql',
+                'mongodb': 'motor'
+            };
+            if (config.database !== 'none' && dbDrivers[config.database]) {
+                allDeps.push(dbDrivers[config.database]);
+            }
+
+            // Create package structure
+            if (config.packaging === 'poetry') {
+                const pyproject = `[tool.poetry]
+name = "${config.projectName}"
+version = "0.1.0"
+description = "${config.description}"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^${config.pythonVersion}"
+${allDeps.map(dep => `${dep} = "*"`).join('\n')}
+
+[tool.poetry.group.dev.dependencies]
+${config.dependencies.includes('pytest') ? '' : 'pytest = "*"\npytest-asyncio = "*"\n'}black = "*"
+ruff = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+`;
+                projectFolder.file('pyproject.toml', pyproject);
+            } else if (config.packaging === 'pip') {
+                projectFolder.file('requirements.txt', allDeps.join('\n'));
+            } else if (config.packaging === 'pipenv') {
+                const pipfile = `[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+${allDeps.map(dep => `${dep} = "*"`).join('\n')}
+
+[dev-packages]
+${config.dependencies.includes('pytest') ? '' : 'pytest = "*"\npytest-asyncio = "*"\n'}black = "*"
+ruff = "*"
+
+[requires]
+python_version = "${config.pythonVersion}"
+`;
+                projectFolder.file('Pipfile', pipfile);
+            }
+
+            // Create main.py
+            const mainPy = `from fastapi import FastAPI
+${config.dependencies.includes('python-multipart') ? 'from fastapi.middleware.cors import CORSMiddleware\n' : ''}
+app = FastAPI(
+    title="${config.projectName}",
+    description="${config.description}",
+    version="0.1.0"
+)
+
+${config.dependencies.includes('python-multipart') ? `# CORS configuration
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+` : ''}@app.get("/")
+async def root():
+    return {"message": "Welcome to ${config.projectName}"}
+
+@app.get("/health")
+async def health_check():
+    return {"status": "healthy"}
+`;
+            const appFolder = projectFolder.folder(config.packageName);
+            appFolder.file('main.py', mainPy);
+            appFolder.file('__init__.py', '');
+
+            // Create config.py if pydantic-settings is selected
+            if (config.dependencies.includes('pydantic-settings')) {
+                const configPy = `from pydantic_settings import BaseSettings
+
+class Settings(BaseSettings):
+    app_name: str = "${config.projectName}"
+    debug: bool = False
+    ${config.database !== 'none' ? `database_url: str = ""\n` : ''}
+    class Config:
+        env_file = ".env"
+
+settings = Settings()
+`;
+                appFolder.file('config.py', configPy);
+                projectFolder.file('.env.example', `APP_NAME=${config.projectName}\nDEBUG=False\n${config.database !== 'none' ? 'DATABASE_URL=\n' : ''}`);
+            }
+
+            // Create database.py if database is selected
+            if (config.database !== 'none' && config.dependencies.includes('sqlalchemy')) {
+                const databasePy = `from sqlalchemy import create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+
+SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"  # Change this for your database
+
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+Base = declarative_base()
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+`;
+                appFolder.file('database.py', databasePy);
+
+                const modelsPy = `from sqlalchemy import Column, Integer, String
+from .database import Base
+
+class Item(Base):
+    __tablename__ = "items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    name = Column(String, index=True)
+    description = Column(String)
+`;
+                appFolder.file('models.py', modelsPy);
+            }
+
+            // Create test file
+            if (config.dependencies.includes('pytest')) {
+                const testsFolder = projectFolder.folder('tests');
+                testsFolder.file('__init__.py', '');
+                const testMain = `from fastapi.testclient import TestClient
+from ${config.packageName}.main import app
+
+client = TestClient(app)
+
+def test_root():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert "message" in response.json()
+
+def test_health_check():
+    response = client.get("/health")
+    assert response.status_code == 200
+    assert response.json() == {"status": "healthy"}
+`;
+                testsFolder.file('test_main.py', testMain);
+            }
+
+            // Create README
+            const readme = `# ${config.projectName}
+
+${config.description}
+
+## Setup
+
+${config.packaging === 'poetry' ? `\`\`\`bash
+poetry install
+poetry run uvicorn ${config.packageName}.main:app --reload
+\`\`\`` : config.packaging === 'pipenv' ? `\`\`\`bash
+pipenv install
+pipenv run uvicorn ${config.packageName}.main:app --reload
+\`\`\`` : `\`\`\`bash
+pip install -r requirements.txt
+uvicorn ${config.packageName}.main:app --reload
+\`\`\``}
+
+## Development
+
+Visit http://localhost:8000/docs for interactive API documentation.
+
+${config.dependencies.includes('pytest') ? `## Testing
+
+\`\`\`bash
+${config.packaging === 'poetry' ? 'poetry run pytest' : config.packaging === 'pipenv' ? 'pipenv run pytest' : 'pytest'}
+\`\`\`
+` : ''}
+## Project Structure
+
+\`\`\`
+${config.projectName}/
+├── ${config.packageName}/
+│   ├── __init__.py
+│   ├── main.py
+${config.dependencies.includes('pydantic-settings') ? '│   ├── config.py\n' : ''}${config.database !== 'none' && config.dependencies.includes('sqlalchemy') ? '│   ├── database.py\n│   └── models.py\n' : ''}${config.dependencies.includes('pytest') ? '├── tests/\n│   ├── __init__.py\n│   └── test_main.py\n' : ''}${config.packaging === 'poetry' ? '├── pyproject.toml' : config.packaging === 'pipenv' ? '├── Pipfile' : '├── requirements.txt'}
+└── README.md
+\`\`\`
+`;
+            projectFolder.file('README.md', readme);
+
+            // Create .gitignore
+            const gitignore = `__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.env
+.venv
+.pytest_cache/
+.ruff_cache/
+*.db
+.DS_Store
+`;
+            projectFolder.file('.gitignore', gitignore);
+
+            // Generate and download zip
+            const content = await zip.generateAsync({ type: 'blob' });
+            const url = URL.createObjectURL(content);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${config.projectName}.zip`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Initialize dependencies on page load
+        renderDependencies();
+    </script>
+</body>
+</html>
