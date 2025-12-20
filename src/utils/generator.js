@@ -56,13 +56,13 @@ export async function generateProject(config) {
         // Create package structure based on selection
         if (config.structure === 'simple') {
             console.log('→ Generating simple structure...');
-            generateSimpleStructure(projectFolder, config, allDeps);
+            await generateSimpleStructure(projectFolder, config, allDeps);
         } else if (config.structure === 'enterprise') {
             console.log('→ Generating enterprise structure...');
-            generateEnterpriseStructure(projectFolder, config, allDeps);
+            await generateEnterpriseStructure(projectFolder, config, allDeps);
         } else {
             console.log('→ Generating structured project...');
-            generateStructuredProject(projectFolder, config, allDeps);
+            await generateStructuredProject(projectFolder, config, allDeps);
         }
         
         console.log('✓ Project structure created');
@@ -90,114 +90,92 @@ export async function generateProject(config) {
 }
 
 // Generate simple project structure
-function generateSimpleStructure(projectFolder, config, allDeps) {
+async function generateSimpleStructure(projectFolder, config, allDeps) {
     // Create package files (poetry, pip, or pipenv)
-    createPackagingFiles(projectFolder, config, allDeps);
+    await createPackagingFiles(projectFolder, config, allDeps);
 
     // Create simple main.py
-    projectFolder.file('main.py', templates.generateSimpleMainPy(config));
+    projectFolder.file('main.py', await templates.generateSimpleMainPy(config));
 
     // Create .env file
-    projectFolder.file('.env', templates.generateEnvFile(config, true));
+    projectFolder.file('.env', await templates.generateEnvFile(config, true));
 
     // Create README
-    projectFolder.file('README.md', templates.generateSimpleReadme(config, allDeps));
+    projectFolder.file('README.md', await templates.generateSimpleReadme(config, allDeps));
 
     // Create .gitignore
-    projectFolder.file('.gitignore', templates.getGitignore());
+    projectFolder.file('.gitignore', await templates.getGitignore());
 }
 
 // Generate structured project
-function generateStructuredProject(projectFolder, config, allDeps) {
+async function generateStructuredProject(projectFolder, config, allDeps) {
     // Create package files
-    createPackagingFiles(projectFolder, config, allDeps);
+    await createPackagingFiles(projectFolder, config, allDeps);
 
     // Create src package
     const srcFolder = projectFolder.folder('src');
     srcFolder.file('__init__.py', '');
 
     // Create config.py
-    srcFolder.file('config.py', templates.generateConfigPy(config));
+    srcFolder.file('config.py', await templates.generateConfigPy(config));
 
     // Create routers package
     const routersFolder = srcFolder.folder('routers');
     routersFolder.file('__init__.py', '');
 
     // Create health_check router
-    routersFolder.file('health_check.py', templates.generateHealthCheckRouter());
+    routersFolder.file('health_check.py', await templates.generateHealthCheckRouter());
 
     // Create authentication router if auth dependencies are included
     if (config.dependencies.some(dep => dep.includes('jose') || dep.includes('passlib'))) {
-        routersFolder.file('authentication_router.py', templates.generateAuthRouter());
+        routersFolder.file('authentication_router.py', await templates.generateAuthRouter());
     }
 
     // Create main.py
-    srcFolder.file('main.py', templates.generateStructuredMainPy(config));
+    srcFolder.file('main.py', await templates.generateStructuredMainPy(config));
 
     // Create .env file
-    projectFolder.file('.env', templates.generateEnvFile(config, false));
+    projectFolder.file('.env', await templates.generateEnvFile(config, false));
 
     // Create .env.example
-    projectFolder.file('.env.example', templates.generateEnvFile(config, false));
+    projectFolder.file('.env.example', await templates.generateEnvFile(config, false));
 
     // Create README
-    projectFolder.file('README.md', templates.generateStructuredReadme(config));
+    projectFolder.file('README.md', await templates.generateStructuredReadme(config));
 
     // Create .gitignore
-    projectFolder.file('.gitignore', templates.getGitignore());
+    projectFolder.file('.gitignore', await templates.getGitignore());
 }
 
 // Create packaging files based on selected package manager
-function createPackagingFiles(projectFolder, config, allDeps) {
+async function createPackagingFiles(projectFolder, config, allDeps) {
     if (config.packaging === 'uv') {
-        projectFolder.file('pyproject.toml', templates.generateUvConfig(config, allDeps));
+        projectFolder.file('pyproject.toml', await templates.generateUvConfig(config, allDeps));
     } else if (config.packaging === 'poetry') {
-        projectFolder.file('pyproject.toml', templates.generatePoetryConfig(config, allDeps));
+        projectFolder.file('pyproject.toml', await templates.generatePoetryConfig(config, allDeps));
     } else if (config.packaging === 'pip') {
-        projectFolder.file('requirements.txt', templates.generateRequirementsTxt(allDeps));
+        projectFolder.file('requirements.txt', await templates.generateRequirementsTxt(allDeps));
     } else if (config.packaging === 'pipenv') {
-        projectFolder.file('Pipfile', templates.generatePipfile(config, allDeps));
+        projectFolder.file('Pipfile', await templates.generatePipfile(config, allDeps));
     }
 }
 
 // Generate enterprise/production structure
-function generateEnterpriseStructure(projectFolder, config, allDeps) {
+async function generateEnterpriseStructure(projectFolder, config, allDeps) {
     // Create packaging files based on selection
-    createPackagingFiles(projectFolder, config, allDeps);
+    await createPackagingFiles(projectFolder, config, allDeps);
     
     // Create app package
     const appFolder = projectFolder.folder('app');
     appFolder.file('__init__.py', '');
-    appFolder.file('main.py', enterpriseTemplates.generateEnterpriseMainPy());
+    appFolder.file('main.py', await enterpriseTemplates.generateEnterpriseMainPy());
     
     // Create core module
     const coreFolder = appFolder.folder('core');
     coreFolder.file('__init__.py', '');
-    coreFolder.file('config.py', enterpriseTemplates.generateEnterpriseConfigPy(config));
-    coreFolder.file('database.py', enterpriseTemplates.generateEnterpriseDatabasePy());
-    coreFolder.file('security.py', `from passlib.context import CryptContext
-from datetime import datetime, timedelta
-from jose import jwt
-from app.core.config import settings
-
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(plain_password, hashed_password)
-
-def get_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
-
-def create_access_token(data: dict, expires_delta: timedelta | None = None) -> str:
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-    return encoded_jwt
-`);
+    coreFolder.file('config.py', await enterpriseTemplates.generateEnterpriseConfigPy(config));
+    coreFolder.file('database.py', await enterpriseTemplates.generateEnterpriseDatabasePy());
+    coreFolder.file('security.py', await enterpriseTemplates.generateEnterpriseSecurityPy());
     
     // Create API module
     const apiFolder = appFolder.folder('api');
@@ -207,7 +185,7 @@ from app.core.database import get_db
 
 # Add authentication and other dependencies here
 `);
-    apiFolder.file('main.py', enterpriseTemplates.generateEnterpriseAPIRouter());
+    apiFolder.file('main.py', await enterpriseTemplates.generateEnterpriseAPIRouter());
     
     // Create API v1 module
     const v1Folder = apiFolder.folder('v1');
@@ -216,7 +194,7 @@ from app.core.database import get_db
     // Create endpoints module
     const endpointsFolder = v1Folder.folder('endpoints');
     endpointsFolder.file('__init__.py', '');
-    endpointsFolder.file('users.py', enterpriseTemplates.generateEnterpriseUsersEndpoint());
+    endpointsFolder.file('users.py', await enterpriseTemplates.generateEnterpriseUsersEndpoint());
     
     // Create CRUD module
     const crudFolder = appFolder.folder('crud');
@@ -224,7 +202,7 @@ from app.core.database import get_db
 
 __all__ = ["user"]
 `);
-    crudFolder.file('base.py', enterpriseTemplates.generateEnterpriseCRUDBase());
+    crudFolder.file('base.py', await enterpriseTemplates.generateEnterpriseCRUDBase());
     crudFolder.file('crud_user.py', `from app.crud.base import CRUDBase
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
@@ -241,7 +219,7 @@ user = CRUDUser(User)
 
 __all__ = ["User"]
 `);
-    modelsFolder.file('user.py', enterpriseTemplates.generateEnterpriseUserModel());
+    modelsFolder.file('user.py', await enterpriseTemplates.generateEnterpriseUserModel());
     
     // Create schemas module
     const schemasFolder = appFolder.folder('schemas');
@@ -249,7 +227,7 @@ __all__ = ["User"]
 
 __all__ = ["User", "UserCreate", "UserUpdate"]
 `);
-    schemasFolder.file('user.py', enterpriseTemplates.generateEnterpriseUserSchemas());
+    schemasFolder.file('user.py', await enterpriseTemplates.generateEnterpriseUserSchemas());
     
     // Create alembic migrations
     const alembicFolder = projectFolder.folder('alembic');
@@ -333,83 +311,16 @@ async def test_create_user(client: AsyncClient) -> None:
 `);
     
     // Create config files
-    projectFolder.file('alembic.ini', enterpriseTemplates.generateEnterpriseAlembicIni());
-    projectFolder.file('Dockerfile', enterpriseTemplates.generateEnterpriseDockerfile());
-    projectFolder.file('docker-compose.yml', enterpriseTemplates.generateEnterpriseDockerCompose());
-    projectFolder.file('pytest.ini', enterpriseTemplates.generateEnterprisePytestIni());
+    projectFolder.file('alembic.ini', await enterpriseTemplates.generateEnterpriseAlembicIni());
+    projectFolder.file('Dockerfile', await enterpriseTemplates.generateEnterpriseDockerfile());
+    projectFolder.file('docker-compose.yml', await enterpriseTemplates.generateEnterpriseDockerCompose());
+    projectFolder.file('pytest.ini', await enterpriseTemplates.generateEnterprisePytestIni());
     
     // Create env files
-    projectFolder.file('.env', `# App Settings
-APP_NAME=${config.projectName}
-APP_DESCRIPTION=${config.description}
-APP_VERSION=0.1.0
-
-# Environment
-ENVIRONMENT=local
-
-# Database
-POSTGRES_SERVER=localhost
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=changeme
-POSTGRES_DB=${config.projectName.replace(/-/g, '_')}
-POSTGRES_PORT=5432
-
-# Security
-SECRET_KEY=changeme-generate-with-openssl-rand-hex-32
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# CORS
-BACKEND_CORS_ORIGINS=http://localhost,http://localhost:3000,http://localhost:8000
-
-# First Superuser
-FIRST_SUPERUSER_EMAIL=admin@example.com
-FIRST_SUPERUSER_PASSWORD=admin
-`);
-    
-    projectFolder.file('.env.example', `# Copy this to .env and configure
-
-# App Settings
-APP_NAME=${config.projectName}
-APP_DESCRIPTION=${config.description}
-APP_VERSION=0.1.0
-
-# Environment (local, staging, production)
-ENVIRONMENT=local
-
-# Database
-POSTGRES_SERVER=localhost
-POSTGRES_USER=postgres
-POSTGRES_PASSWORD=changeme
-POSTGRES_DB=${config.projectName.replace(/-/g, '_')}
-POSTGRES_PORT=5432
-
-# Security (generate SECRET_KEY with: openssl rand -hex 32)
-SECRET_KEY=changeme
-ALGORITHM=HS256
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-
-# CORS
-BACKEND_CORS_ORIGINS=http://localhost,http://localhost:3000
-
-# First Superuser
-FIRST_SUPERUSER_EMAIL=admin@example.com
-FIRST_SUPERUSER_PASSWORD=changeme
-`);
+    projectFolder.file('.env', await enterpriseTemplates.generateEnterpriseEnv(config));
+    projectFolder.file('.env.example', await enterpriseTemplates.generateEnterpriseEnvExample(config));
     
     // Create README and .gitignore
-    projectFolder.file('README.md', enterpriseTemplates.generateEnterpriseReadme(config));
-    projectFolder.file('.gitignore', templates.getGitignore() + `
-# Alembic
-alembic/versions/*.pyc
-alembic/__pycache__/
-
-# Testing
-.pytest_cache/
-htmlcov/
-.coverage
-
-# Docker
-.dockerignore
-`);
+    projectFolder.file('README.md', await enterpriseTemplates.generateEnterpriseReadme(config));
+    projectFolder.file('.gitignore', await templates.getGitignore() + await enterpriseTemplates.generateEnterpriseGitignoreExtra());
 }

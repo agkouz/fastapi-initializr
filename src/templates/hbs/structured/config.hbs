@@ -1,0 +1,28 @@
+import os
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
+
+class AppConfig:
+    def __init__(self):
+        # App-wide settings
+        self.debug = os.getenv("DEBUG", "FALSE").upper() == "TRUE"
+        self.app_name = os.getenv("APP_NAME", "{{projectName}}")
+        self.version = os.getenv("VERSION", "0.1.0")
+
+        # CORS settings
+        self.cors_allow_origins = [
+            "http://localhost:3000",
+            "http://127.0.0.1:3000",
+            os.getenv("CORS_ALLOW_ORIGINS", "")
+        ]
+        self.cors_allow_origins = [origin for origin in self.cors_allow_origins if origin]
+
+{{#if (neq database "none")}}
+        # Database config
+        self.database_url = os.getenv("DATABASE_URL", "{{databaseUrl}}")
+{{/if}}
+
+# Create a global config instance
+config = AppConfig()

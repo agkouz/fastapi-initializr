@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+{{#each dependencies}}
+{{this}} = "*"
+{{/each}}
+
+[dev-packages]
+{{#unless (includes dependencies "pytest")}}pytest = "*"
+pytest-asyncio = "*"
+{{/unless}}black = "*"
+ruff = "*"
+
+[requires]
+python_version = "{{pythonVersion}}"

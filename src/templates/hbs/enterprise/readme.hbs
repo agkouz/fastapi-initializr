@@ -1,0 +1,176 @@
+# {{projectName}}
+
+{{description}}
+
+## Enterprise FastAPI Boilerplate
+
+This project is based on the production-ready FastAPI boilerplate structure from [benavlabs/FastAPI-boilerplate](https://github.com/benavlabs/FastAPI-boilerplate).
+
+## Features
+
+- ⚡️ **FastAPI** - Modern, fast web framework
+- 🗄️ **SQLAlchemy 2.0** - Async ORM
+- 🐘 **PostgreSQL** - Production database
+- 🔐 **JWT Authentication** - Secure authentication
+- 📝 **Alembic** - Database migrations
+- 🐳 **Docker** - Containerization ready
+- 🧪 **Pytest** - Testing framework
+- 📊 **Pydantic V2** - Data validation
+- 🎯 **CRUD Operations** - Pre-built patterns
+- 📁 **Organized Structure** - Scalable architecture
+
+## Project Structure
+
+```
+{{projectName}}/
+├── app/
+│   ├── __init__.py
+│   ├── main.py              # Application entry point
+│   ├── api/                 # API endpoints
+│   │   ├── __init__.py
+│   │   ├── deps.py          # Dependencies
+│   │   ├── main.py          # API router
+│   │   └── v1/              # API version 1
+│   │       ├── __init__.py
+│   │       └── endpoints/   # Endpoint modules
+│   │           ├── __init__.py
+│   │           └── users.py
+│   ├── core/                # Core functionality
+│   │   ├── __init__.py
+│   │   ├── config.py        # Configuration
+│   │   ├── database.py      # Database setup
+│   │   └── security.py      # Security utilities
+│   ├── crud/                # CRUD operations
+│   │   ├── __init__.py
+│   │   ├── base.py          # Base CRUD
+│   │   └── crud_user.py     # User CRUD
+│   ├── models/              # SQLAlchemy models
+│   │   ├── __init__.py
+│   │   └── user.py
+│   └── schemas/             # Pydantic schemas
+│       ├── __init__.py
+│       └── user.py
+├── alembic/                 # Database migrations
+│   ├── versions/
+│   └── env.py
+├── tests/                   # Test files
+│   ├── __init__.py
+│   └── test_users.py
+├── .env                     # Environment variables
+├── .env.example             # Example env file
+├── .gitignore
+├── alembic.ini              # Alembic configuration
+├── docker-compose.yml       # Docker Compose
+├── Dockerfile               # Docker image
+├── {{#eq packaging "uv"}}pyproject.toml{{/eq}}{{#eq packaging "poetry"}}pyproject.toml{{/eq}}{{#eq packaging "pipenv"}}Pipfile{{/eq}}{{#eq packaging "pip"}}requirements.txt{{/eq}}         # Python dependencies
+└── README.md                # This file
+```
+
+## Quick Start
+
+### 1. Set up environment variables
+
+Copy the example env file:
+```bash
+cp .env.example .env
+```
+
+Edit `.env` and configure your settings.
+
+### 2. Run with Docker (Recommended)
+
+```bash
+docker-compose up -d
+```
+
+### 3. Run locally
+
+Install dependencies:
+```bash
+{{#eq packaging "uv"}}uv sync{{/eq}}{{#eq packaging "poetry"}}poetry install{{/eq}}{{#eq packaging "pipenv"}}pipenv install{{/eq}}{{#eq packaging "pip"}}pip install -r requirements.txt{{/eq}}
+```
+
+Run database migrations:
+```bash
+{{#eq packaging "uv"}}uv run alembic upgrade head{{/eq}}{{#eq packaging "poetry"}}poetry run alembic upgrade head{{/eq}}{{#eq packaging "pipenv"}}pipenv run alembic upgrade head{{/eq}}{{#eq packaging "pip"}}alembic upgrade head{{/eq}}
+```
+
+Start the application:
+```bash
+{{#eq packaging "uv"}}uv run uvicorn app.main:app --reload{{/eq}}{{#eq packaging "poetry"}}poetry run uvicorn app.main:app --reload{{/eq}}{{#eq packaging "pipenv"}}pipenv run uvicorn app.main:app --reload{{/eq}}{{#eq packaging "pip"}}uvicorn app.main:app --reload{{/eq}}
+```
+
+## API Documentation
+
+Once running, visit:
+- **Swagger UI**: http://localhost:8000/api/v1/docs
+- **ReDoc**: http://localhost:8000/api/v1/redoc
+
+## Database Migrations
+
+Create a new migration:
+```bash
+{{#eq packaging "uv"}}uv run alembic revision --autogenerate -m "Description"{{/eq}}{{#eq packaging "poetry"}}poetry run alembic revision --autogenerate -m "Description"{{/eq}}{{#eq packaging "pipenv"}}pipenv run alembic revision --autogenerate -m "Description"{{/eq}}{{#eq packaging "pip"}}alembic revision --autogenerate -m "Description"{{/eq}}
+```
+
+Apply migrations:
+```bash
+{{#eq packaging "uv"}}uv run alembic upgrade head{{/eq}}{{#eq packaging "poetry"}}poetry run alembic upgrade head{{/eq}}{{#eq packaging "pipenv"}}pipenv run alembic upgrade head{{/eq}}{{#eq packaging "pip"}}alembic upgrade head{{/eq}}
+```
+
+Rollback migration:
+```bash
+alembic downgrade -1
+```
+
+## Testing
+
+Run tests:
+```bash
+pytest
+```
+
+Run with coverage:
+```bash
+pytest --cov=app tests/
+```
+
+## Development
+
+The application uses:
+- **FastAPI** for the API framework
+- **SQLAlchemy 2.0** with async support
+- **Pydantic V2** for data validation
+- **Alembic** for database migrations
+- **PostgreSQL** as the database
+
+## Adding New Endpoints
+
+1. Create a new endpoint file in `app/api/v1/endpoints/`
+2. Define your routes using FastAPI router
+3. Add CRUD operations in `app/crud/`
+4. Define models in `app/models/`
+5. Define schemas in `app/schemas/`
+6. Include router in `app/api/v1/__init__.py`
+
+## Production Deployment
+
+For production, consider:
+- Using Gunicorn with Uvicorn workers
+- Setting up NGINX as reverse proxy
+- Configuring proper CORS origins
+- Using environment variables for secrets
+- Setting up monitoring and logging
+- Implementing rate limiting
+- Adding Redis for caching
+
+## Learn More
+
+- [FastAPI Documentation](https://fastapi.tiangolo.com/)
+- [SQLAlchemy 2.0 Documentation](https://docs.sqlalchemy.org/en/20/)
+- [Pydantic V2 Documentation](https://docs.pydantic.dev/latest/)
+- [Original Boilerplate](https://github.com/benavlabs/FastAPI-boilerplate)
+
+## License
+
+This project structure is based on the FastAPI boilerplate by benavlabs.

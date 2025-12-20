@@ -1,0 +1,22 @@
+[tool.poetry]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "{{description}}"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^{{pythonVersion}}"
+{{#each dependencies}}
+{{this}} = "*"
+{{/each}}
+
+[tool.poetry.group.dev.dependencies]
+{{#unless (includes dependencies "pytest")}}pytest = "*"
+pytest-asyncio = "*"
+{{/unless}}black = "*"
+ruff = "*"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
