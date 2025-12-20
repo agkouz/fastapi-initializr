@@ -1,0 +1,19 @@
+# {{projectName}}
+
+{{description}}
+
+## Setup
+
+```bash
+# Install dependencies
+{{#eq packaging "uv"}}uv sync{{/eq}}{{#eq packaging "poetry"}}poetry install{{/eq}}{{#eq packaging "pipenv"}}pipenv install{{/eq}}{{#eq packaging "pip"}}pip install -r requirements.txt{{/eq}}
+
+# Run the application
+{{#eq packaging "uv"}}uv run uvicorn main:app --reload{{/eq}}{{#eq packaging "poetry"}}poetry run uvicorn main:app --reload{{/eq}}{{#eq packaging "pipenv"}}pipenv run uvicorn main:app --reload{{/eq}}{{#eq packaging "pip"}}uvicorn main:app --reload{{/eq}}
+```
+
+## API Documentation
+
+Once running, visit:
+- Swagger UI: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc

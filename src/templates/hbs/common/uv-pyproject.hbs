@@ -1,0 +1,35 @@
+[project]
+name = "{{projectName}}"
+version = "0.1.0"
+description = "{{description}}"
+readme = "README.md"
+requires-python = ">={{pythonVersion}}"
+dependencies = [
+{{#each dependencies}}
+    "{{this}}",
+{{/each}}
+]
+
+[project.optional-dependencies]
+dev = [
+{{#unless (includes dependencies "pytest")}}
+    "pytest",
+    "pytest-asyncio",
+{{/unless}}
+    "black",
+    "ruff",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.uv]
+dev-dependencies = [
+{{#unless (includes dependencies "pytest")}}
+    "pytest>=7.4.0",
+    "pytest-asyncio>=0.21.0",
+{{/unless}}
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+]
