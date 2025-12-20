@@ -82,7 +82,6 @@ export async function generateProject(config) {
         URL.revokeObjectURL(url);
         
         console.log('✅ Project generated successfully!');
-        alert(`✅ Project "${config.projectName}" generated successfully!`);
         
     } catch (error) {
         console.error('❌ Error generating project:', error);
