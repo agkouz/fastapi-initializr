@@ -1,27 +1,27 @@
 {
   "name": "fastapi-initializr-react",
+  "private": true,
   "version": "1.0.0",
-  "description": "React-based FastAPI project generator with no build step required",
+  "type": "module",
   "scripts": {
-    "serve": "python -m http.server 8080",
-    "serve:node": "npx http-server -p 8080"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "lint": "eslint ."
   },
-  "keywords": [
-    "fastapi",
-    "react",
-    "generator",
-    "initializr",
-    "python",
-    "no-build"
-  ],
-  "author": "FastAPI Initializr",
-  "license": "MIT",
-  "dependencies": {},
-  "devDependencies": {},
-  "notes": {
-    "no-install-needed": "This project uses CDN versions of React, ReactDOM, Babel, and JSZip",
-    "how-to-run": "Just run 'python -m http.server 8080' and open http://localhost:8080/public/",
-    "browser-requirements": "Modern browser with ES6 module support",
-    "why-no-build": "Uses Babel Standalone for JSX transformation in the browser"
+  "dependencies": {
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "jszip": "^3.10.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "eslint": "^9.15.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "eslint-plugin-react-refresh": "^0.4.14",
+    "vite": "^6.0.1"
   }
 }

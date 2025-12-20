@@ -1,21 +1,14 @@
+import JSZip from "jszip";
 // generator.js - Project Generation Logic
 
-import * as templates from '../templates.js';
-import * as enterpriseTemplates from '../enterpriseTemplates.js';
+import * as templates from '../templates/templates.js';
+import * as enterpriseTemplates from '../templates/enterpriseTemplates.js';
 
 // Main project generation function
 export async function generateProject(config) {
     console.log('🚀 Starting project generation...', config);
     
     try {
-        // Check if JSZip is available
-        if (typeof JSZip === 'undefined') {
-            alert('Error: JSZip library not loaded. Please refresh the page.');
-            console.error('JSZip is not defined');
-            return;
-        }
-        
-        console.log('✓ JSZip available');
         
         const zip = new JSZip();
         const projectFolder = zip.folder(config.projectName);

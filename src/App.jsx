@@ -1,7 +1,22 @@
-import { FALLBACK_DATABASE, PROJECT_STRUCTURES } from './config.js';
+import { useState, useMemo } from 'react';
+import { CURATED_PACKAGES, FALLBACK_DATABASE } from './config.js';
 import { generateProject } from './utils/generator.js';
+import './App.css';
 
-const { useState, useEffect, useMemo } = React;
+const PROJECT_STRUCTURES = {
+    simple: {
+        title: 'Simple',
+        description: 'Single file structure - Perfect for learning, prototypes, and simple APIs'
+    },
+    structured: {
+        title: 'Structured',
+        description: 'Organized package structure with routers and config - Production-ready for most projects'
+    },
+    enterprise: {
+        title: 'Enterprise',
+        description: 'Complete production boilerplate with API versioning, CRUD, migrations, testing, Docker - based on benavlabs/FastAPI-boilerplate'
+    }
+};
 
 function App() {
     // Form state
@@ -20,7 +35,7 @@ function App() {
     const [loading, setLoading] = useState(false);
     
     // Data
-    const [dependencies, setDependencies] = useState(FALLBACK_DATABASE);
+    const [dependencies] = useState(FALLBACK_DATABASE);
 
     // Filter and search dependencies
     const filteredDeps = useMemo(() => {
@@ -311,6 +326,4 @@ function App() {
     );
 }
 
-// Render the app
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<App />);
+export default App;
