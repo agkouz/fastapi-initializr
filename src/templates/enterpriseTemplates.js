@@ -137,8 +137,3 @@ export async function generateEnterpriseSetup() {
 export async function generateEnterpriseApiDependencies() {
     return await renderTemplate('enterprise/api/dependencies.hbs');
 }
-
-// Generate v1 router
-export async function generateEnterpriseV1Router() {
-    return await renderTemplate('enterprise/api/v1/router.hbs');
-}

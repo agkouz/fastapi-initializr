@@ -1,7 +1,7 @@
 from fastapi.middleware.cors import CORSMiddleware
 from app.core.setup import create_application
 from app.core.config import settings
-from app.api.v1.router import api_router
+from app.api.v1 import users
 
 # Create FastAPI application
 app = create_application()
@@ -16,5 +16,5 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-# Include API v1 router
-app.include_router(api_router, prefix="/api/v1")
+# Include API v1 endpoints
+app.include_router(users.router, prefix="/api/v1/users", tags=["users"])

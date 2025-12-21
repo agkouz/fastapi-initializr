@@ -118,8 +118,9 @@ describe('Template Loader', () => {
       const result = await renderTemplate('enterprise/app/main.hbs');
       expect(result).toContain('from fastapi.middleware.cors import CORSMiddleware');
       expect(result).toContain('from app.core.setup import create_application');
-      expect(result).toContain('from app.api.v1.router import api_router');
-      expect(result).toContain('prefix="/api/v1"');
+      expect(result).toContain('from app.api.v1 import users');
+      expect(result).toContain('users.router');
+      expect(result).toContain('prefix="/api/v1/users"');
     });
 
     it('should render enterprise config', async () => {

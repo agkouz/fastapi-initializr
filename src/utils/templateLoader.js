@@ -47,7 +47,6 @@ import enterpriseTestUsersTemplate from '../templates/hbs/enterprise/tests/test-
 import enterpriseLoggerTemplate from '../templates/hbs/enterprise/core/logger.hbs?raw';
 import enterpriseSetupTemplate from '../templates/hbs/enterprise/core/setup.hbs?raw';
 import enterpriseApiDependenciesTemplate from '../templates/hbs/enterprise/api/dependencies.hbs?raw';
-import enterpriseV1RouterTemplate from '../templates/hbs/enterprise/api/v1/router.hbs?raw';
 import enterpriseUsersV1Template from '../templates/hbs/enterprise/api/v1/users.hbs?raw';
 
 // Template registry
@@ -96,7 +95,6 @@ const templateRegistry = {
     'enterprise/core/logger.hbs': enterpriseLoggerTemplate,
     'enterprise/core/setup.hbs': enterpriseSetupTemplate,
     'enterprise/api/dependencies.hbs': enterpriseApiDependenciesTemplate,
-    'enterprise/api/v1/router.hbs': enterpriseV1RouterTemplate,
     'enterprise/api/v1/users.hbs': enterpriseUsersV1Template,
 };
 
