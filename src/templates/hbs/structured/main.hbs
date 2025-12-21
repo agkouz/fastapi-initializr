@@ -10,7 +10,7 @@ app = FastAPI(
     version=config.version
 )
 
-// Include routers
+# Include routers
 app.include_router(health_check.router, tags=["health"])
 {{#if (includesAny dependencies ["jose" "passlib"])}}
 app.include_router(
