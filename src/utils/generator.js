@@ -188,9 +188,6 @@ async function generateEnterpriseStructure(projectFolder, config, allDeps) {
     const v1Folder = apiFolder.folder('v1');
     v1Folder.file('__init__.py', '');
     v1Folder.file('router.py', await enterpriseTemplates.generateEnterpriseV1Router());
-    v1Folder.file('health.py', await enterpriseTemplates.generateEnterpriseHealthEndpoint());
-    v1Folder.file('login.py', await enterpriseTemplates.generateEnterpriseLoginEndpoint());
-    v1Folder.file('logout.py', await enterpriseTemplates.generateEnterpriseLogoutEndpoint());
     v1Folder.file('users.py', await enterpriseTemplates.generateEnterpriseUsersEndpoint());
     
     // Create CRUD module

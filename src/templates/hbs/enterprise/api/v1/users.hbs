@@ -2,7 +2,6 @@ from typing import Any, List
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from app import crud, schemas
-from app.api.dependencies import get_current_active_user
 from app.core.database import get_db
 from loguru import logger
 
@@ -14,14 +13,12 @@ async def read_users(
     db: AsyncSession = Depends(get_db),
     skip: int = 0,
     limit: int = 100,
-    current_user: schemas.User = Depends(get_current_active_user),
 ) -> Any:
     """
     Retrieve users.
-    Requires authentication.
     """
     users = await crud.user.get_multi(db, skip=skip, limit=limit)
-    logger.info(f"User {current_user.email} retrieved {len(users)} users")
+    logger.info(f"Retrieved {len(users)} users")
     return users
 
 
@@ -33,7 +30,6 @@ async def create_user(
 ) -> Any:
     """
     Create new user.
-    Public endpoint for user registration.
     """
     # Check if user already exists
     existing_user = await crud.user.get_by_email(db, email=user_in.email)
@@ -49,29 +45,17 @@ async def create_user(
     return user
 
 
-@router.get("/me", response_model=schemas.User)
-async def read_current_user(
-    current_user: schemas.User = Depends(get_current_active_user),
-) -> Any:
-    """
-    Get current authenticated user.
-    """
-    return current_user
-
-
 @router.get("/{user_id}", response_model=schemas.User)
 async def read_user_by_id(
     user_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_active_user),
 ) -> Any:
     """
     Get a specific user by id.
-    Requires authentication.
     """
     user = await crud.user.get(db, id=user_id)
     if not user:
-        logger.warning(f"User {current_user.email} attempted to access non-existent user ID: {user_id}")
+        logger.warning(f"Attempted to access non-existent user ID: {user_id}")
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
@@ -84,24 +68,15 @@ async def update_user(
     user_id: int,
     user_in: schemas.UserUpdate,
     db: AsyncSession = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_active_user),
 ) -> Any:
     """
     Update a user.
-    Users can only update their own profile.
     """
     user = await crud.user.get(db, id=user_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
-        )
-
-    # Check if user is updating their own profile
-    if user.id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized to update this user",
         )
 
     user = await crud.user.update(db, db_obj=user, obj_in=user_in)
@@ -113,24 +88,15 @@ async def update_user(
 async def delete_user(
     user_id: int,
     db: AsyncSession = Depends(get_db),
-    current_user: schemas.User = Depends(get_current_active_user),
 ) -> None:
     """
     Delete a user.
-    Users can only delete their own profile.
     """
     user = await crud.user.get(db, id=user_id)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="User not found",
-        )
-
-    # Check if user is deleting their own profile
-    if user.id != current_user.id:
-        raise HTTPException(
-            status_code=status.HTTP_403_FORBIDDEN,
-            detail="Not authorized to delete this user",
         )
 
     await crud.user.remove(db, id=user_id)

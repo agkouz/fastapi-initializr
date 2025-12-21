@@ -142,18 +142,3 @@ export async function generateEnterpriseApiDependencies() {
 export async function generateEnterpriseV1Router() {
     return await renderTemplate('enterprise/api/v1/router.hbs');
 }
-
-// Generate health endpoint
-export async function generateEnterpriseHealthEndpoint() {
-    return await renderTemplate('enterprise/api/v1/health.hbs');
-}
-
-// Generate login endpoint
-export async function generateEnterpriseLoginEndpoint() {
-    return await renderTemplate('enterprise/api/v1/login.hbs');
-}
-
-// Generate logout endpoint
-export async function generateEnterpriseLogoutEndpoint() {
-    return await renderTemplate('enterprise/api/v1/logout.hbs');
-}
