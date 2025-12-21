@@ -20,12 +20,12 @@ export async function getGitignore() {
 
 // Generate simple main.py
 export async function generateSimpleMainPy(config) {
-    return await renderTemplate('simple/main.hbs', config);
+    return await renderTemplate('simple/app/main.hbs', config);
 }
 
 // Generate structured main.py
 export async function generateStructuredMainPy(config) {
-    return await renderTemplate('structured/main.hbs', config);
+    return await renderTemplate('structured/app/main.hbs', config);
 }
 
 // Generate config.py for structured projects
@@ -34,30 +34,30 @@ export async function generateConfigPy(config) {
         ...config,
         databaseUrl: getDatabaseUrl(config.database)
     };
-    return await renderTemplate('structured/config.hbs', context);
+    return await renderTemplate('structured/app/config.hbs', context);
 }
 
 // Generate health check router
 export async function generateHealthCheckRouter() {
-    return await renderTemplate('structured/health-check-router.hbs');
+    return await renderTemplate('structured/routers/health-check-router.hbs');
 }
 
 // Generate authentication router
 export async function generateAuthRouter() {
-    return await renderTemplate('structured/auth-router.hbs');
+    return await renderTemplate('structured/routers/auth-router.hbs');
 }
 
 // Generate .env file
 export async function generateEnvFile(config, isSimple = false) {
     if (isSimple) {
-        return await renderTemplate('simple/env.hbs', config);
+        return await renderTemplate('simple/config/env.hbs', config);
     }
 
     const context = {
         ...config,
         databaseUrl: getDatabaseUrl(config.database)
     };
-    return await renderTemplate('structured/env.hbs', context);
+    return await renderTemplate('structured/config/env.hbs', context);
 }
 
 // Generate README for simple structure
@@ -66,12 +66,12 @@ export async function generateSimpleReadme(config, allDeps) {
         ...config,
         dependencies: allDeps
     };
-    return await renderTemplate('simple/readme.hbs', context);
+    return await renderTemplate('simple/docs/readme.hbs', context);
 }
 
 // Generate README for structured project
 export async function generateStructuredReadme(config) {
-    return await renderTemplate('structured/readme.hbs', config);
+    return await renderTemplate('structured/docs/readme.hbs', config);
 }
 
 // Generate Poetry pyproject.toml
@@ -80,7 +80,7 @@ export async function generatePoetryConfig(config, allDeps) {
         ...config,
         dependencies: allDeps
     };
-    return await renderTemplate('common/poetry-pyproject.hbs', context);
+    return await renderTemplate('common/packaging/poetry-pyproject.hbs', context);
 }
 
 // Generate UV pyproject.toml
@@ -89,7 +89,7 @@ export async function generateUvConfig(config, allDeps) {
         ...config,
         dependencies: allDeps
     };
-    return await renderTemplate('common/uv-pyproject.hbs', context);
+    return await renderTemplate('common/packaging/uv-pyproject.hbs', context);
 }
 
 // Generate Pipfile
@@ -98,10 +98,10 @@ export async function generatePipfile(config, allDeps) {
         ...config,
         dependencies: allDeps
     };
-    return await renderTemplate('common/pipfile.hbs', context);
+    return await renderTemplate('common/packaging/pipfile.hbs', context);
 }
 
 // Generate requirements.txt
 export async function generateRequirementsTxt(allDeps) {
-    return await renderTemplate('common/requirements.hbs', { dependencies: allDeps });
+    return await renderTemplate('common/packaging/requirements.hbs', { dependencies: allDeps });
 }
