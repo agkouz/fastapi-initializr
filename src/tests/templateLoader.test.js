@@ -11,7 +11,7 @@ describe('Template Loader', () => {
     });
 
     it('should render requirements template', async () => {
-      const result = await renderTemplate('common/requirements.hbs', {
+      const result = await renderTemplate('common/packaging/requirements.hbs', {
         dependencies: ['fastapi', 'uvicorn', 'pytest']
       });
       expect(result).toContain('fastapi');
@@ -20,7 +20,7 @@ describe('Template Loader', () => {
     });
 
     it('should render poetry pyproject template', async () => {
-      const result = await renderTemplate('common/poetry-pyproject.hbs', {
+      const result = await renderTemplate('common/packaging/poetry-pyproject.hbs', {
         projectName: 'test-project',
         description: 'Test description',
         pythonVersion: '3.12',
@@ -35,7 +35,7 @@ describe('Template Loader', () => {
 
   describe('Simple Templates', () => {
     it('should render simple main.py without CORS', async () => {
-      const result = await renderTemplate('simple/main.hbs', {
+      const result = await renderTemplate('simple/app/main.hbs', {
         projectName: 'my-api',
         description: 'My API',
         dependencies: []
@@ -46,7 +46,7 @@ describe('Template Loader', () => {
     });
 
     it('should render simple main.py with CORS', async () => {
-      const result = await renderTemplate('simple/main.hbs', {
+      const result = await renderTemplate('simple/app/main.hbs', {
         projectName: 'my-api',
         description: 'My API',
         dependencies: ['python-multipart']
@@ -57,7 +57,7 @@ describe('Template Loader', () => {
     });
 
     it('should render simple env file', async () => {
-      const result = await renderTemplate('simple/env.hbs', {
+      const result = await renderTemplate('simple/config/env.hbs', {
         projectName: 'test-api'
       });
       expect(result).toContain('APP_NAME=test-api');
@@ -65,7 +65,7 @@ describe('Template Loader', () => {
     });
 
     it('should render simple readme', async () => {
-      const result = await renderTemplate('simple/readme.hbs', {
+      const result = await renderTemplate('simple/docs/readme.hbs', {
         projectName: 'test-api',
         description: 'Test API',
         packaging: 'pip'
@@ -78,7 +78,7 @@ describe('Template Loader', () => {
 
   describe('Structured Templates', () => {
     it('should render structured main.py without auth', async () => {
-      const result = await renderTemplate('structured/main.hbs', {
+      const result = await renderTemplate('structured/app/main.hbs', {
         dependencies: []
       });
       expect(result).toContain('from fastapi import FastAPI');
@@ -87,7 +87,7 @@ describe('Template Loader', () => {
     });
 
     it('should render structured main.py with auth', async () => {
-      const result = await renderTemplate('structured/main.hbs', {
+      const result = await renderTemplate('structured/app/main.hbs', {
         dependencies: ['python-jose[cryptography]', 'passlib[bcrypt]']
       });
       expect(result).toContain('from src.routers import authentication_router');
@@ -95,7 +95,7 @@ describe('Template Loader', () => {
     });
 
     it('should render structured config with database', async () => {
-      const result = await renderTemplate('structured/config.hbs', {
+      const result = await renderTemplate('structured/app/config.hbs', {
         projectName: 'test-api',
         database: 'postgres',
         databaseUrl: 'postgresql://localhost/test'
@@ -105,7 +105,7 @@ describe('Template Loader', () => {
     });
 
     it('should render structured config without database', async () => {
-      const result = await renderTemplate('structured/config.hbs', {
+      const result = await renderTemplate('structured/app/config.hbs', {
         projectName: 'test-api',
         database: 'none'
       });
@@ -115,14 +115,14 @@ describe('Template Loader', () => {
 
   describe('Enterprise Templates', () => {
     it('should render enterprise main.py', async () => {
-      const result = await renderTemplate('enterprise/main.hbs');
+      const result = await renderTemplate('enterprise/app/main.hbs');
       expect(result).toContain('from fastapi import FastAPI');
       expect(result).toContain('from app.api.main import api_router');
       expect(result).toContain('from app.core.config import settings');
     });
 
     it('should render enterprise config', async () => {
-      const result = await renderTemplate('enterprise/config.hbs', {
+      const result = await renderTemplate('enterprise/core/config.hbs', {
         projectName: 'enterprise-api',
         description: 'Enterprise API'
       });
@@ -131,7 +131,7 @@ describe('Template Loader', () => {
     });
 
     it('should render enterprise database', async () => {
-      const result = await renderTemplate('enterprise/database.hbs');
+      const result = await renderTemplate('enterprise/core/database.hbs');
       expect(result).toContain('from sqlalchemy.ext.asyncio import AsyncSession');
       expect(result).toContain('async def get_db()');
     });
@@ -139,7 +139,7 @@ describe('Template Loader', () => {
 
   describe('Handlebars Helpers', () => {
     it('should use includes helper correctly', async () => {
-      const result = await renderTemplate('simple/main.hbs', {
+      const result = await renderTemplate('simple/app/main.hbs', {
         projectName: 'test',
         description: 'test',
         dependencies: ['python-multipart']
@@ -148,14 +148,14 @@ describe('Template Loader', () => {
     });
 
     it('should use eq helper for packaging', async () => {
-      const resultPip = await renderTemplate('simple/readme.hbs', {
+      const resultPip = await renderTemplate('simple/docs/readme.hbs', {
         projectName: 'test',
         description: 'test',
         packaging: 'pip'
       });
       expect(resultPip).toContain('pip install -r requirements.txt');
 
-      const resultPoetry = await renderTemplate('simple/readme.hbs', {
+      const resultPoetry = await renderTemplate('simple/docs/readme.hbs', {
         projectName: 'test',
         description: 'test',
         packaging: 'poetry'
@@ -164,14 +164,14 @@ describe('Template Loader', () => {
     });
 
     it('should use neq helper for database', async () => {
-      const withDb = await renderTemplate('structured/config.hbs', {
+      const withDb = await renderTemplate('structured/app/config.hbs', {
         projectName: 'test',
         database: 'postgres',
         databaseUrl: 'postgresql://localhost/db'
       });
       expect(withDb).toContain('database_url');
 
-      const withoutDb = await renderTemplate('structured/config.hbs', {
+      const withoutDb = await renderTemplate('structured/app/config.hbs', {
         projectName: 'test',
         database: 'none'
       });

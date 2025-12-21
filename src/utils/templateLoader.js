@@ -103,8 +103,10 @@ function registerHelpers() {
     });
 
     // Helper to check if array includes any value from another array
-    Handlebars.registerHelper('includesAny', function(array, values) {
-        return array && values && array.some(dep => values.some(val => dep.includes(val)));
+    Handlebars.registerHelper('includesAny', function(array, ...values) {
+        // Remove the last argument which is the Handlebars options object
+        const searchValues = values.slice(0, -1);
+        return array && searchValues.length > 0 && array.some(dep => searchValues.some(val => dep.includes(val)));
     });
 
     // Helper for equality check
