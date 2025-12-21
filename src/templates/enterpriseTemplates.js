@@ -87,3 +87,38 @@ export async function generateEnterpriseEnvExample(config) {
 export async function generateEnterpriseGitignoreExtra() {
     return await renderTemplate('enterprise/gitignore-extra.hbs');
 }
+
+// Generate API deps.py
+export async function generateEnterpriseApiDeps() {
+    return await renderTemplate('enterprise/api-deps.hbs');
+}
+
+// Generate CRUD __init__.py
+export async function generateEnterpriseCrudInit() {
+    return await renderTemplate('enterprise/crud-init.hbs');
+}
+
+// Generate crud_user.py
+export async function generateEnterpriseCrudUser() {
+    return await renderTemplate('enterprise/crud-user.hbs');
+}
+
+// Generate models __init__.py
+export async function generateEnterpriseModelsInit() {
+    return await renderTemplate('enterprise/models-init.hbs');
+}
+
+// Generate schemas __init__.py
+export async function generateEnterpriseSchemasInit() {
+    return await renderTemplate('enterprise/schemas-init.hbs');
+}
+
+// Generate alembic env.py
+export async function generateEnterpriseAlembicEnv() {
+    return await renderTemplate('enterprise/alembic-env.hbs');
+}
+
+// Generate test_users.py
+export async function generateEnterpriseTestUsers() {
+    return await renderTemplate('enterprise/test-users.hbs');
+}

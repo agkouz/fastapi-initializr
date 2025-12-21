@@ -180,11 +180,7 @@ async function generateEnterpriseStructure(projectFolder, config, allDeps) {
     // Create API module
     const apiFolder = appFolder.folder('api');
     apiFolder.file('__init__.py', '');
-    apiFolder.file('deps.py', `from typing import Generator
-from app.core.database import get_db
-
-# Add authentication and other dependencies here
-`);
+    apiFolder.file('deps.py', await enterpriseTemplates.generateEnterpriseApiDeps());
     apiFolder.file('main.py', await enterpriseTemplates.generateEnterpriseAPIRouter());
     
     // Create API v1 module
@@ -198,96 +194,23 @@ from app.core.database import get_db
     
     // Create CRUD module
     const crudFolder = appFolder.folder('crud');
-    crudFolder.file('__init__.py', `from .crud_user import user
-
-__all__ = ["user"]
-`);
+    crudFolder.file('__init__.py', await enterpriseTemplates.generateEnterpriseCrudInit());
     crudFolder.file('base.py', await enterpriseTemplates.generateEnterpriseCRUDBase());
-    crudFolder.file('crud_user.py', `from app.crud.base import CRUDBase
-from app.models.user import User
-from app.schemas.user import UserCreate, UserUpdate
-
-class CRUDUser(CRUDBase[User, UserCreate, UserUpdate]):
-    pass
-
-user = CRUDUser(User)
-`);
+    crudFolder.file('crud_user.py', await enterpriseTemplates.generateEnterpriseCrudUser());
     
     // Create models module
     const modelsFolder = appFolder.folder('models');
-    modelsFolder.file('__init__.py', `from .user import User
-
-__all__ = ["User"]
-`);
+    modelsFolder.file('__init__.py', await enterpriseTemplates.generateEnterpriseModelsInit());
     modelsFolder.file('user.py', await enterpriseTemplates.generateEnterpriseUserModel());
     
     // Create schemas module
     const schemasFolder = appFolder.folder('schemas');
-    schemasFolder.file('__init__.py', `from .user import User, UserCreate, UserUpdate
-
-__all__ = ["User", "UserCreate", "UserUpdate"]
-`);
+    schemasFolder.file('__init__.py', await enterpriseTemplates.generateEnterpriseSchemasInit());
     schemasFolder.file('user.py', await enterpriseTemplates.generateEnterpriseUserSchemas());
     
     // Create alembic migrations
     const alembicFolder = projectFolder.folder('alembic');
-    alembicFolder.file('env.py', `from logging.config import fileConfig
-from sqlalchemy import pool
-from sqlalchemy.engine import Connection
-from sqlalchemy.ext.asyncio import async_engine_from_config
-from alembic import context
-
-from app.core.config import settings
-from app.core.database import Base
-from app.models import *  # noqa
-
-config = context.config
-config.set_main_option("sqlalchemy.url", str(settings.SQLALCHEMY_DATABASE_URI))
-
-if config.config_file_name is not None:
-    fileConfig(config.config_file_name)
-
-target_metadata = Base.metadata
-
-def run_migrations_offline() -> None:
-    url = config.get_main_option("sqlalchemy.url")
-    context.configure(
-        url=url,
-        target_metadata=target_metadata,
-        literal_binds=True,
-        dialect_opts={"paramstyle": "named"},
-    )
-
-    with context.begin_transaction():
-        context.run_migrations()
-
-def do_run_migrations(connection: Connection) -> None:
-    context.configure(connection=connection, target_metadata=target_metadata)
-
-    with context.begin_transaction():
-        context.run_migrations()
-
-async def run_async_migrations() -> None:
-    connectable = async_engine_from_config(
-        config.get_section(config.config_ini_section, {}),
-        prefix="sqlalchemy.",
-        poolclass=pool.NullPool,
-    )
-
-    async with connectable.connect() as connection:
-        await connection.run_sync(do_run_migrations)
-
-    await connectable.dispose()
-
-def run_migrations_online() -> None:
-    import asyncio
-    asyncio.run(run_async_migrations())
-
-if context.is_offline_mode():
-    run_migrations_offline()
-else:
-    run_migrations_online()
-`);
+    alembicFolder.file('env.py', await enterpriseTemplates.generateEnterpriseAlembicEnv());
     
     const versionsFolder = alembicFolder.folder('versions');
     versionsFolder.file('.gitkeep', '');
@@ -295,20 +218,7 @@ else:
     // Create tests module
     const testsFolder = projectFolder.folder('tests');
     testsFolder.file('__init__.py', '');
-    testsFolder.file('test_users.py', `import pytest
-from httpx import AsyncClient
-
-@pytest.mark.asyncio
-async def test_create_user(client: AsyncClient) -> None:
-    response = await client.post(
-        "/api/v1/users/",
-        json={"email": "test@example.com", "username": "testuser", "password": "testpass"},
-    )
-    assert response.status_code == 200
-    data = response.json()
-    assert data["email"] == "test@example.com"
-    assert "id" in data
-`);
+    testsFolder.file('test_users.py', await enterpriseTemplates.generateEnterpriseTestUsers());
     
     // Create config files
     projectFolder.file('alembic.ini', await enterpriseTemplates.generateEnterpriseAlembicIni());

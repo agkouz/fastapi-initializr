@@ -37,6 +37,13 @@ import enterprisePytestIniTemplate from '../templates/hbs/enterprise/pytest-ini.
 import enterpriseEnvTemplate from '../templates/hbs/enterprise/env.hbs?raw';
 import enterpriseEnvExampleTemplate from '../templates/hbs/enterprise/env-example.hbs?raw';
 import enterpriseGitignoreExtraTemplate from '../templates/hbs/enterprise/gitignore-extra.hbs?raw';
+import enterpriseApiDepsTemplate from '../templates/hbs/enterprise/api-deps.hbs?raw';
+import enterpriseCrudInitTemplate from '../templates/hbs/enterprise/crud-init.hbs?raw';
+import enterpriseCrudUserTemplate from '../templates/hbs/enterprise/crud-user.hbs?raw';
+import enterpriseModelsInitTemplate from '../templates/hbs/enterprise/models-init.hbs?raw';
+import enterpriseSchemasInitTemplate from '../templates/hbs/enterprise/schemas-init.hbs?raw';
+import enterpriseAlembicEnvTemplate from '../templates/hbs/enterprise/alembic-env.hbs?raw';
+import enterpriseTestUsersTemplate from '../templates/hbs/enterprise/test-users.hbs?raw';
 
 // Template registry
 const templateRegistry = {
@@ -74,6 +81,13 @@ const templateRegistry = {
     'enterprise/env.hbs': enterpriseEnvTemplate,
     'enterprise/env-example.hbs': enterpriseEnvExampleTemplate,
     'enterprise/gitignore-extra.hbs': enterpriseGitignoreExtraTemplate,
+    'enterprise/api-deps.hbs': enterpriseApiDepsTemplate,
+    'enterprise/crud-init.hbs': enterpriseCrudInitTemplate,
+    'enterprise/crud-user.hbs': enterpriseCrudUserTemplate,
+    'enterprise/models-init.hbs': enterpriseModelsInitTemplate,
+    'enterprise/schemas-init.hbs': enterpriseSchemasInitTemplate,
+    'enterprise/alembic-env.hbs': enterpriseAlembicEnvTemplate,
+    'enterprise/test-users.hbs': enterpriseTestUsersTemplate,
 };
 
 // Cache for compiled templates
