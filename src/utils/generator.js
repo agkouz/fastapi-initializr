@@ -176,21 +176,22 @@ async function generateEnterpriseStructure(projectFolder, config, allDeps) {
     coreFolder.file('config.py', await enterpriseTemplates.generateEnterpriseConfigPy(config));
     coreFolder.file('database.py', await enterpriseTemplates.generateEnterpriseDatabasePy());
     coreFolder.file('security.py', await enterpriseTemplates.generateEnterpriseSecurityPy());
-    
+    coreFolder.file('logger.py', await enterpriseTemplates.generateEnterpriseLogger());
+    coreFolder.file('setup.py', await enterpriseTemplates.generateEnterpriseSetup());
+
     // Create API module
     const apiFolder = appFolder.folder('api');
     apiFolder.file('__init__.py', '');
-    apiFolder.file('deps.py', await enterpriseTemplates.generateEnterpriseApiDeps());
-    apiFolder.file('main.py', await enterpriseTemplates.generateEnterpriseAPIRouter());
-    
+    apiFolder.file('dependencies.py', await enterpriseTemplates.generateEnterpriseApiDependencies());
+
     // Create API v1 module
     const v1Folder = apiFolder.folder('v1');
     v1Folder.file('__init__.py', '');
-    
-    // Create endpoints module
-    const endpointsFolder = v1Folder.folder('endpoints');
-    endpointsFolder.file('__init__.py', '');
-    endpointsFolder.file('users.py', await enterpriseTemplates.generateEnterpriseUsersEndpoint());
+    v1Folder.file('router.py', await enterpriseTemplates.generateEnterpriseV1Router());
+    v1Folder.file('health.py', await enterpriseTemplates.generateEnterpriseHealthEndpoint());
+    v1Folder.file('login.py', await enterpriseTemplates.generateEnterpriseLoginEndpoint());
+    v1Folder.file('logout.py', await enterpriseTemplates.generateEnterpriseLogoutEndpoint());
+    v1Folder.file('users.py', await enterpriseTemplates.generateEnterpriseUsersEndpoint());
     
     // Create CRUD module
     const crudFolder = appFolder.folder('crud');

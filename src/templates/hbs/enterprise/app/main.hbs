@@ -1,22 +1,10 @@
-from fastapi import FastAPI
-from fastapi.routing import APIRoute
-from starlette.middleware.cors import CORSMiddleware
-
-from app.api.main import api_router
+from fastapi.middleware.cors import CORSMiddleware
+from app.core.setup import create_application
 from app.core.config import settings
+from app.api.v1.router import api_router
 
-
-def custom_generate_unique_id(route: APIRoute) -> str:
-    return f"{route.tags[0]}-{route.name}"
-
-
-app = FastAPI(
-    title=settings.APP_NAME,
-    description=settings.APP_DESCRIPTION,
-    version=settings.APP_VERSION,
-    openapi_url=f"{settings.API_V1_STR}/openapi.json" if settings.ENVIRONMENT == "local" else None,
-    generate_unique_id_function=custom_generate_unique_id,
-)
+# Create FastAPI application
+app = create_application()
 
 # Set all CORS enabled origins
 if settings.BACKEND_CORS_ORIGINS:
@@ -28,4 +16,5 @@ if settings.BACKEND_CORS_ORIGINS:
         allow_headers=["*"],
     )
 
-app.include_router(api_router, prefix=settings.API_V1_STR)
+# Include API v1 router
+app.include_router(api_router, prefix="/api/v1")

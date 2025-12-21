@@ -1,0 +1,25 @@
+from fastapi import APIRouter, Depends
+from app.api.dependencies import get_current_user
+from app.schemas.user import User
+from loguru import logger
+
+router = APIRouter()
+
+
+@router.post("/logout")
+async def logout(current_user: User = Depends(get_current_user)):
+    """
+    Logout endpoint.
+
+    Note: Since we're using stateless JWT tokens, actual logout is handled
+    client-side by discarding the token. This endpoint is provided for
+    consistency and logging purposes.
+
+    For production use, consider implementing token blacklisting with Redis.
+    """
+    logger.info(f"User logged out: {current_user.email}")
+
+    return {
+        "message": "Successfully logged out",
+        "detail": "Please discard your access token"
+    }

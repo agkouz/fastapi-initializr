@@ -122,3 +122,38 @@ export async function generateEnterpriseAlembicEnv() {
 export async function generateEnterpriseTestUsers() {
     return await renderTemplate('enterprise/tests/test-users.hbs');
 }
+
+// Generate logger.py
+export async function generateEnterpriseLogger() {
+    return await renderTemplate('enterprise/core/logger.hbs');
+}
+
+// Generate setup.py
+export async function generateEnterpriseSetup() {
+    return await renderTemplate('enterprise/core/setup.hbs');
+}
+
+// Generate API dependencies.py
+export async function generateEnterpriseApiDependencies() {
+    return await renderTemplate('enterprise/api/dependencies.hbs');
+}
+
+// Generate v1 router
+export async function generateEnterpriseV1Router() {
+    return await renderTemplate('enterprise/api/v1/router.hbs');
+}
+
+// Generate health endpoint
+export async function generateEnterpriseHealthEndpoint() {
+    return await renderTemplate('enterprise/api/v1/health.hbs');
+}
+
+// Generate login endpoint
+export async function generateEnterpriseLoginEndpoint() {
+    return await renderTemplate('enterprise/api/v1/login.hbs');
+}
+
+// Generate logout endpoint
+export async function generateEnterpriseLogoutEndpoint() {
+    return await renderTemplate('enterprise/api/v1/logout.hbs');
+}

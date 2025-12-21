@@ -1,0 +1,10 @@
+from fastapi import APIRouter
+from app.api.v1 import health, login, logout, users
+
+api_router = APIRouter()
+
+# Include all v1 endpoints
+api_router.include_router(health.router, tags=["health"])
+api_router.include_router(login.router, prefix="/auth", tags=["authentication"])
+api_router.include_router(logout.router, prefix="/auth", tags=["authentication"])
+api_router.include_router(users.router, prefix="/users", tags=["users"])

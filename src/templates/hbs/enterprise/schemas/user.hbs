@@ -1,6 +1,16 @@
 from pydantic import BaseModel, EmailStr
 
 
+# Token schemas
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
+
+
+class TokenPayload(BaseModel):
+    sub: str | None = None
+
+
 # Shared properties
 class UserBase(BaseModel):
     email: EmailStr | None = None

@@ -44,6 +44,14 @@ import enterpriseModelsInitTemplate from '../templates/hbs/enterprise/models/ini
 import enterpriseSchemasInitTemplate from '../templates/hbs/enterprise/schemas/init.hbs?raw';
 import enterpriseAlembicEnvTemplate from '../templates/hbs/enterprise/alembic/env.hbs?raw';
 import enterpriseTestUsersTemplate from '../templates/hbs/enterprise/tests/test-users.hbs?raw';
+import enterpriseLoggerTemplate from '../templates/hbs/enterprise/core/logger.hbs?raw';
+import enterpriseSetupTemplate from '../templates/hbs/enterprise/core/setup.hbs?raw';
+import enterpriseApiDependenciesTemplate from '../templates/hbs/enterprise/api/dependencies.hbs?raw';
+import enterpriseV1RouterTemplate from '../templates/hbs/enterprise/api/v1/router.hbs?raw';
+import enterpriseHealthEndpointTemplate from '../templates/hbs/enterprise/api/v1/health.hbs?raw';
+import enterpriseLoginEndpointTemplate from '../templates/hbs/enterprise/api/v1/login.hbs?raw';
+import enterpriseLogoutEndpointTemplate from '../templates/hbs/enterprise/api/v1/logout.hbs?raw';
+import enterpriseUsersV1Template from '../templates/hbs/enterprise/api/v1/users.hbs?raw';
 
 // Template registry
 const templateRegistry = {
@@ -88,6 +96,14 @@ const templateRegistry = {
     'enterprise/schemas/init.hbs': enterpriseSchemasInitTemplate,
     'enterprise/alembic/env.hbs': enterpriseAlembicEnvTemplate,
     'enterprise/tests/test-users.hbs': enterpriseTestUsersTemplate,
+    'enterprise/core/logger.hbs': enterpriseLoggerTemplate,
+    'enterprise/core/setup.hbs': enterpriseSetupTemplate,
+    'enterprise/api/dependencies.hbs': enterpriseApiDependenciesTemplate,
+    'enterprise/api/v1/router.hbs': enterpriseV1RouterTemplate,
+    'enterprise/api/v1/health.hbs': enterpriseHealthEndpointTemplate,
+    'enterprise/api/v1/login.hbs': enterpriseLoginEndpointTemplate,
+    'enterprise/api/v1/logout.hbs': enterpriseLogoutEndpointTemplate,
+    'enterprise/api/v1/users.hbs': enterpriseUsersV1Template,
 };
 
 // Cache for compiled templates

@@ -1,0 +1,65 @@
+import logging
+import sys
+from pathlib import Path
+from loguru import logger
+from app.core.config import settings
+
+
+class InterceptHandler(logging.Handler):
+    """
+    Default handler from examples in loguru documentation.
+    See https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging
+    """
+
+    def emit(self, record: logging.LogRecord) -> None:
+        # Get corresponding Loguru level if it exists
+        try:
+            level = logger.level(record.levelname).name
+        except ValueError:
+            level = record.levelno
+
+        # Find caller from where originated the logged message
+        frame, depth = logging.currentframe(), 2
+        while frame.f_code.co_filename == logging.__file__:
+            frame = frame.f_back
+            depth += 1
+
+        logger.opt(depth=depth, exception=record.exc_info).log(
+            level, record.getMessage()
+        )
+
+
+def setup_logging() -> None:
+    """
+    Configure logging for the application.
+    """
+    # Remove default handler
+    logger.remove()
+
+    # Add custom handler with desired format
+    logger.add(
+        sys.stdout,
+        level=settings.LOG_LEVEL,
+        format="<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{level: <8}</level> | <cyan>{name}</cyan>:<cyan>{function}</cyan> - <level>{message}</level>",
+        colorize=True,
+    )
+
+    # Add file handler if enabled
+    if settings.LOG_FILE:
+        log_path = Path("logs")
+        log_path.mkdir(exist_ok=True)
+        logger.add(
+            log_path / "app.log",
+            rotation="500 MB",
+            retention="10 days",
+            level=settings.LOG_LEVEL,
+            format="{time:YYYY-MM-DD HH:mm:ss} | {level: <8} | {name}:{function} - {message}",
+        )
+
+    # Intercept standard logging
+    logging.basicConfig(handlers=[InterceptHandler()], level=0, force=True)
+
+    # Set loguru as handler for uvicorn
+    for logger_name in ["uvicorn", "uvicorn.access", "uvicorn.error"]:
+        logging_logger = logging.getLogger(logger_name)
+        logging_logger.handlers = [InterceptHandler()]

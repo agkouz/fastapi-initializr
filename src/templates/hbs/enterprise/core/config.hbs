@@ -21,13 +21,18 @@ class Settings(BaseSettings):
     # App Settings
     APP_NAME: str = "{{projectName}}"
     APP_DESCRIPTION: str = "{{description}}"
-    APP_VERSION: str = "0.1.0"
+    VERSION: str = "0.1.0"
+    APP_VERSION: str = "0.1.0"  # Kept for backward compatibility
     CONTACT_NAME: str = ""
     CONTACT_EMAIL: str = ""
     LICENSE_NAME: str = ""
 
     # Environment
     ENVIRONMENT: str = "local"  # local, staging, production
+
+    # Logging
+    LOG_LEVEL: str = "INFO"
+    LOG_FILE: bool = True
 
     # Database
     POSTGRES_SERVER: str = "localhost"

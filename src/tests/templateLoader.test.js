@@ -116,9 +116,10 @@ describe('Template Loader', () => {
   describe('Enterprise Templates', () => {
     it('should render enterprise main.py', async () => {
       const result = await renderTemplate('enterprise/app/main.hbs');
-      expect(result).toContain('from fastapi import FastAPI');
-      expect(result).toContain('from app.api.main import api_router');
-      expect(result).toContain('from app.core.config import settings');
+      expect(result).toContain('from fastapi.middleware.cors import CORSMiddleware');
+      expect(result).toContain('from app.core.setup import create_application');
+      expect(result).toContain('from app.api.v1.router import api_router');
+      expect(result).toContain('prefix="/api/v1"');
     });
 
     it('should render enterprise config', async () => {
