@@ -32,7 +32,8 @@ export async function generateProject(config) {
                 'passlib[bcrypt]',
                 'python-multipart',
                 'email-validator',
-                'asyncpg'  // PostgreSQL async driver
+                'asyncpg',  // PostgreSQL async driver
+                'loguru'   // Logging
             ];
             enterpriseDeps.forEach(dep => {
                 if (!allDeps.includes(dep)) {
