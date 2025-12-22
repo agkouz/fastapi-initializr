@@ -31,6 +31,44 @@ describe('Template Loader', () => {
       expect(result).toContain('python = "^3.12"');
       expect(result).toContain('fastapi = "*"');
     });
+
+    it('should render uv pyproject template for enterprise with wheel config', async () => {
+      const result = await renderTemplate('common/packaging/uv-pyproject.hbs', {
+        projectName: 'enterprise-project',
+        description: 'Enterprise project',
+        pythonVersion: '3.12',
+        structure: 'enterprise',
+        dependencies: ['fastapi', 'uvicorn']
+      });
+      expect(result).toContain('name = "enterprise-project"');
+      expect(result).toContain('[tool.hatch.build.targets.wheel]');
+      expect(result).toContain('packages = ["app"]');
+    });
+
+    it('should render uv pyproject template for structured with wheel config', async () => {
+      const result = await renderTemplate('common/packaging/uv-pyproject.hbs', {
+        projectName: 'structured-project',
+        description: 'Structured project',
+        pythonVersion: '3.12',
+        structure: 'structured',
+        dependencies: ['fastapi', 'uvicorn']
+      });
+      expect(result).toContain('[tool.hatch.build.targets.wheel]');
+      expect(result).toContain('packages = ["src"]');
+    });
+
+    it('should render uv pyproject template for simple without wheel config', async () => {
+      const result = await renderTemplate('common/packaging/uv-pyproject.hbs', {
+        projectName: 'simple-project',
+        description: 'Simple project',
+        pythonVersion: '3.12',
+        structure: 'simple',
+        dependencies: ['fastapi', 'uvicorn']
+      });
+      expect(result).not.toContain('[tool.hatch.build.targets.wheel]');
+      expect(result).not.toContain('packages = ["app"]');
+      expect(result).not.toContain('packages = ["src"]');
+    });
   });
 
   describe('Simple Templates', () => {

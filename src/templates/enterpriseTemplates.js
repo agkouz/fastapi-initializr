@@ -88,11 +88,6 @@ export async function generateEnterpriseGitignoreExtra() {
     return await renderTemplate('enterprise/config/gitignore-extra.hbs');
 }
 
-// Generate API deps.py
-export async function generateEnterpriseApiDeps() {
-    return await renderTemplate('enterprise/api/deps.hbs');
-}
-
 // Generate CRUD __init__.py
 export async function generateEnterpriseCrudInit() {
     return await renderTemplate('enterprise/crud/init.hbs');

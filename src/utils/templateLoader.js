@@ -37,7 +37,6 @@ import enterprisePytestIniTemplate from '../templates/hbs/enterprise/tests/pytes
 import enterpriseEnvTemplate from '../templates/hbs/enterprise/config/env.hbs?raw';
 import enterpriseEnvExampleTemplate from '../templates/hbs/enterprise/config/env-example.hbs?raw';
 import enterpriseGitignoreExtraTemplate from '../templates/hbs/enterprise/config/gitignore-extra.hbs?raw';
-import enterpriseApiDepsTemplate from '../templates/hbs/enterprise/api/deps.hbs?raw';
 import enterpriseCrudInitTemplate from '../templates/hbs/enterprise/crud/init.hbs?raw';
 import enterpriseCrudUserTemplate from '../templates/hbs/enterprise/crud/user.hbs?raw';
 import enterpriseModelsInitTemplate from '../templates/hbs/enterprise/models/init.hbs?raw';
@@ -85,7 +84,6 @@ const templateRegistry = {
     'enterprise/config/env.hbs': enterpriseEnvTemplate,
     'enterprise/config/env-example.hbs': enterpriseEnvExampleTemplate,
     'enterprise/config/gitignore-extra.hbs': enterpriseGitignoreExtraTemplate,
-    'enterprise/api/deps.hbs': enterpriseApiDepsTemplate,
     'enterprise/crud/init.hbs': enterpriseCrudInitTemplate,
     'enterprise/crud/user.hbs': enterpriseCrudUserTemplate,
     'enterprise/models/init.hbs': enterpriseModelsInitTemplate,
@@ -117,13 +115,29 @@ function registerHelpers() {
         return array && searchValues.length > 0 && array.some(dep => searchValues.some(val => dep.includes(val)));
     });
 
-    // Helper for equality check
-    Handlebars.registerHelper('eq', function(a, b) {
+    // Helper for equality check (works as both inline and block helper)
+    Handlebars.registerHelper('eq', function(a, b, options) {
+        // If used as block helper ({{#eq a b}}...{{/eq}})
+        if (options && options.fn) {
+            if (a === b) {
+                return options.fn(this);
+            }
+            return options.inverse ? options.inverse(this) : '';
+        }
+        // If used as inline helper ({{eq a b}})
         return a === b;
     });
 
-    // Helper for inequality check
-    Handlebars.registerHelper('neq', function(a, b) {
+    // Helper for inequality check (works as both inline and block helper)
+    Handlebars.registerHelper('neq', function(a, b, options) {
+        // If used as block helper ({{#neq a b}}...{{/neq}})
+        if (options && options.fn) {
+            if (a !== b) {
+                return options.fn(this);
+            }
+            return options.inverse ? options.inverse(this) : '';
+        }
+        // If used as inline helper ({{neq a b}})
         return a !== b;
     });
 

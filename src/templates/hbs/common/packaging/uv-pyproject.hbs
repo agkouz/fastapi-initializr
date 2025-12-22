@@ -23,6 +23,16 @@ dev = [
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+{{#eq structure "enterprise"}}
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+{{/eq}}
+{{#eq structure "structured"}}
+
+[tool.hatch.build.targets.wheel]
+packages = ["src"]
+{{/eq}}
 
 [tool.uv]
 dev-dependencies = [
