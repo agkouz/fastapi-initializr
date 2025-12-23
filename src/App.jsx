@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import { CURATED_PACKAGES, FALLBACK_DATABASE } from './config.js';
 import { generateProject } from './utils/generator.js';
 
@@ -32,6 +32,34 @@ function App() {
     // Data
     const [dependencies] = useState(FALLBACK_DATABASE);
 
+    // Enterprise mode auto-selected dependencies (matching generator.js enterpriseDeps)
+    const ENTERPRISE_DEP_IDS = [
+        'sqlalchemy',       // sqlalchemy[asyncio]
+        'alembic',          // alembic
+        'pydantic_settings', // pydantic-settings
+        'python_jose',      // python-jose[cryptography]
+        'passlib',          // passlib[bcrypt]
+        'python_multipart', // python-multipart
+        'email_validator',  // email-validator
+        'asyncpg',          // asyncpg
+        'loguru'            // loguru
+    ];
+
+    // Handle structure changes: lock enterprise deps/database or clear selections
+    useEffect(() => {
+        if (structure === 'enterprise') {
+            // Auto-select and lock enterprise dependencies
+            setSelectedDeps(new Set(ENTERPRISE_DEP_IDS));
+            // Lock database to PostgreSQL for enterprise
+            setDatabase('postgres');
+        } else {
+            // Clear all selections when switching away from enterprise
+            setSelectedDeps(new Set());
+            // Reset database to none
+            setDatabase('none');
+        }
+    }, [structure]);
+
     // Filter and search dependencies
     const filteredDeps = useMemo(() => {
         return dependencies.filter(dep => {
@@ -50,6 +78,10 @@ function App() {
     }, [selectedDeps, dependencies]);
 
     const toggleDependency = (depId) => {
+        // Prevent toggling locked enterprise dependencies
+        if (structure === 'enterprise' && ENTERPRISE_DEP_IDS.includes(depId)) {
+            return;
+        }
         setSelectedDeps(prev => {
             const newSet = new Set(prev);
             if (newSet.has(depId)) {
@@ -60,6 +92,9 @@ function App() {
             return newSet;
         });
     };
+
+    // Get locked dependency IDs (for enterprise mode)
+    const lockedDeps = structure === 'enterprise' ? new Set(ENTERPRISE_DEP_IDS) : new Set();
 
     const handleGenerate = async () => {
         setLoading(true);
@@ -130,17 +165,19 @@ function App() {
                     <Database
                         database={database}
                         setDatabase={setDatabase}
+                        locked={structure === 'enterprise'}
                     />
 
                     {/* Dependencies */}
-                    <Dependencies 
-                        searchTerm={searchTerm} 
-                        setSearchTerm={setSearchTerm} 
-                        filter={filter} 
-                        setFilter={setFilter} 
-                        selectedDeps={selectedDeps} 
-                        toggleDependency={toggleDependency} 
-                        filteredDeps={filteredDeps} 
+                    <Dependencies
+                        searchTerm={searchTerm}
+                        setSearchTerm={setSearchTerm}
+                        filter={filter}
+                        setFilter={setFilter}
+                        selectedDeps={selectedDeps}
+                        toggleDependency={toggleDependency}
+                        filteredDeps={filteredDeps}
+                        lockedDeps={lockedDeps}
                     />
                 </div>
 
