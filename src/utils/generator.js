@@ -220,7 +220,7 @@ async function generateEnterpriseStructure(projectFolder, config, allDeps) {
     
     // Create config files
     projectFolder.file('alembic.ini', await enterpriseTemplates.generateEnterpriseAlembicIni());
-    projectFolder.file('Dockerfile', await enterpriseTemplates.generateEnterpriseDockerfile());
+    projectFolder.file('Dockerfile', await enterpriseTemplates.generateEnterpriseDockerfile(config));
     projectFolder.file('docker-compose.yml', await enterpriseTemplates.generateEnterpriseDockerCompose());
     projectFolder.file('pytest.ini', await enterpriseTemplates.generateEnterprisePytestIni());
     

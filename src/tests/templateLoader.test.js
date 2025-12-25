@@ -175,6 +175,53 @@ describe('Template Loader', () => {
       expect(result).toContain('from sqlalchemy.ext.asyncio import AsyncSession');
       expect(result).toContain('async def get_db()');
     });
+
+    it('should render enterprise Dockerfile with uv packaging', async () => {
+      const result = await renderTemplate('enterprise/docker/dockerfile.hbs', {
+        packaging: 'uv'
+      });
+      expect(result).toContain('pip install uv');
+      expect(result).toContain('COPY pyproject.toml README.md');
+      expect(result).toContain('uv pip install --system .');
+      expect(result).not.toContain('-e .');
+      expect(result).not.toContain('requirements.txt');
+      expect(result).not.toContain('poetry');
+      expect(result).not.toContain('pipenv');
+    });
+
+    it('should render enterprise Dockerfile with poetry packaging', async () => {
+      const result = await renderTemplate('enterprise/docker/dockerfile.hbs', {
+        packaging: 'poetry'
+      });
+      expect(result).toContain('pip install poetry');
+      expect(result).toContain('COPY pyproject.toml poetry.lock');
+      expect(result).toContain('poetry install');
+      expect(result).not.toContain('requirements.txt');
+      expect(result).not.toContain('uv pip');
+    });
+
+    it('should render enterprise Dockerfile with pipenv packaging', async () => {
+      const result = await renderTemplate('enterprise/docker/dockerfile.hbs', {
+        packaging: 'pipenv'
+      });
+      expect(result).toContain('pip install pipenv');
+      expect(result).toContain('COPY Pipfile Pipfile.lock');
+      expect(result).toContain('pipenv install --system --deploy');
+      expect(result).not.toContain('requirements.txt');
+      expect(result).not.toContain('poetry');
+    });
+
+    it('should render enterprise Dockerfile with pip packaging', async () => {
+      const result = await renderTemplate('enterprise/docker/dockerfile.hbs', {
+        packaging: 'pip'
+      });
+      expect(result).toContain('COPY requirements.txt');
+      expect(result).toContain('pip install --no-cache-dir -r requirements.txt');
+      expect(result).not.toContain('pyproject.toml');
+      expect(result).not.toContain('poetry');
+      expect(result).not.toContain('pipenv');
+      expect(result).not.toContain('uv pip');
+    });
   });
 
   describe('Handlebars Helpers', () => {

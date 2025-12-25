@@ -49,8 +49,8 @@ export async function generateEnterpriseAlembicIni() {
 }
 
 // Generate Dockerfile
-export async function generateEnterpriseDockerfile() {
-    return await renderTemplate('enterprise/docker/dockerfile.hbs');
+export async function generateEnterpriseDockerfile(config) {
+    return await renderTemplate('enterprise/docker/dockerfile.hbs', config);
 }
 
 // Generate docker-compose.yml
